@@ -365,7 +365,7 @@ function egBlock(html){ return `<div class="eg"><b>Ví dụ:</b> ${html}</div>`;
 
 function textQ(id, label, req, long, opts){
   opts = opts || {};
-  const max = long ? 1000 : 200;
+  const max = long ? 2000 : 200;
   const optTag = req ? '<span class="req">*</span>' : '<span class="optlab">(không bắt buộc)</span>';
   const hint = opts.hint ? `<div class="hint">${opts.hint}</div>` : '';
   const eg   = opts.eg ? egBlock(opts.eg) : '';

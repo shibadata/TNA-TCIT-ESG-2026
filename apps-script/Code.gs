@@ -20,10 +20,10 @@
 const SECRET   = 'shiba-tna-tcit-2026-form';   // phải khớp CONFIG.TOKEN trong HTML
 const TAB_NAME = 'Raw';
 
-const TEXT_MAX  = 1000;   // textbox dài
+const TEXT_MAX  = 2000;   // textbox dài
 const SHORT_MAX = 200;    // text ngắn
 const NICK_MAX  = 200;
-const MAX_BODY  = 16 * 1024;
+const MAX_BODY  = 64 * 1024;   // nới theo TEXT_MAX 2000 (tiếng Việt UTF-8 nhiều byte/ký tự)
 
 const B2_ROWS = ['b2_quydinh','b2_ghg','b2_nangluong','b2_data','b2_hsse','b2_cangxanh','b2_kpi','b2_phoihop','b2_dichesg'];
 const C1_ROWS = ['c1_esg_la_gi','c1_scope12','c1_euets','c1_cangxanh','c1_nangluong','c1_materiality','c1_esms','c1_vithe'];
