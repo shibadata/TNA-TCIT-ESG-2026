@@ -17,7 +17,7 @@
  * Vì thế KHÔNG dùng openById. Script phải bound trong đúng Sheet đích.
  */
 
-const SECRET   = 'DOI-CHUOI-NAY';   // phải khớp CONFIG.TOKEN trong HTML
+const SECRET   = 'shiba-tna-tcit-2026-form';   // phải khớp CONFIG.TOKEN trong HTML
 const TAB_NAME = 'Raw';
 
 const TEXT_MAX  = 1000;   // textbox dài
