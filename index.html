@@ -538,7 +538,7 @@ function buildPanels(){
     <div class="rev" id="reviewlist"></div>
     <div class="pnav">
       <button type="button" class="btn ghost" data-go="4">← Quay lại</button>
-      <button type="button" class="btn primary" id="submitBtn">Gửi ý kiến</button>
+      <button type="button" class="btn primary" id="submitBtn">Gửi phản hồi</button>
     </div>
   </div>
   <div class="thanks card" id="thanks">
@@ -684,7 +684,7 @@ function validate(v){
   const e = {0:[],1:[],2:[],3:[],4:[]};
   // info (tab 0)
   if(!v.job_title) e[0].push("Chức danh/Vị trí");
-  if(!v.org_unit) e[0].push("Phòng ban");
+  if(!v.org_unit) e[0].push("Đơn vị công tác");
   else if(v.org_unit==="other" && !v.org_unit_other) e[0].push("Còn thiếu nội dung cho mục đơn vị khác");
   if(!v.years_at_company) e[0].push("Số năm gắn bó");
   if(!v.attended_intro_0904) e[0].push("Tham dự buổi 09/04");
@@ -775,7 +775,7 @@ function renderReview(){
   pushRow("3.1 Mức hiểu biết hiện tại",matrixText(C1_ROWS,"c1"));
   pushRow("3.2 Đang làm gì",v.c2_dang_lam);
   pushRow("3.3 Rào cản",codeText(C3_OPTS,v.c3_raocan)+(v.c3_raocan_khac?` (Khác: ${v.c3_raocan_khac})`:''));
-  pushRow("4.1 Điểm yếu so với cảng khác",v.d1_diem_yeu);
+  pushRow("4.1 Điểm cần củng cố",v.d1_diem_yeu);
   pushRow("4.2 Cần hỗ trợ",codeText(D2_OPTS,v.d2_hotro)+(v.d2_hotro_khac?` (Khác: ${v.d2_hotro_khac})`:''));
   pushRow("4.3 Kỳ vọng",v.d3_kyvong);
   pushRow("4.4 Chia sẻ thêm",v.d4_chia_se);

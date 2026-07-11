@@ -2,7 +2,7 @@
 
 File này để một session mới (Claude Code web hoặc người) đọc là nắm đủ context làm tiếp, không cần hội thoại gốc. Cập nhật khi trạng thái đổi.
 
-Cập nhật: 2026-07-12
+Cập nhật: 2026-07-11
 
 ## Đây là gì
 
@@ -47,16 +47,15 @@ Cấu trúc tab: Thông tin · A Điều cần đạt · B Điều cần biết 
 ## Trạng thái hiện tại
 
 - Form + Apps Script + Pages: XONG, đã push, Pages sống.
-- **CHƯA nối dữ liệu thật.** `CONFIG.SCRIPT_URL` trong `index.html` đang rỗng ⇒ form chạy **chế độ demo**: bấm Gửi ra màn cảm ơn, payload in ra Console (F12), KHÔNG ghi vào Sheet.
+- **ĐÃ nối dữ liệu thật.** `CONFIG.SCRIPT_URL` trong `index.html` đã trỏ vào Web App đã deploy; `CONFIG.TOKEN` = `shiba-tna-tcit-2026-form`, khớp `SECRET` trong `apps-script/Code.gs`. Bấm Gửi ghi thật một dòng vào tab `Raw`.
+- Nếu `SCRIPT_URL` bị để rỗng lại thì form tự về **chế độ demo** (payload in ra Console F12, không ghi Sheet) — hành vi dự phòng, không phải trạng thái hiện tại.
 
-## Việc còn phải làm (cần chủ dự án, không tự động được)
+## Việc còn phải làm
 
-Nối form vào Sheet — làm theo `apps-script/SETUP.md`:
-1. Mở Sheet đích, tab `Raw`, dán `header-row-raw.txt` vào A1.
-2. Trong chính Sheet đó: Extensions → Apps Script (bound script), dán `Code.gs`, đổi `SECRET`.
-3. Deploy → Web app (Execute as: Me · Access: Anyone) → copy Web App URL.
-4. Trong `index.html` khối `CONFIG`: điền `SCRIPT_URL` = URL vừa copy, `TOKEN` = đúng `SECRET`. Commit → Pages tự cập nhật.
-5. Điền thử một bản, kiểm tab `Raw` có dòng mới đúng cột.
+Không còn bước đấu nối bắt buộc — form đã sống và ghi thật. Việc còn lại chỉ khi chủ dự án muốn:
+- Kiểm tra định kỳ tab `Raw` nhận đúng dòng/đúng cột.
+- Nếu đổi schema (thêm/bớt câu) phải đồng bộ cả 3 nơi theo mục "Cách sửa và triển khai" bên dưới.
+- Nếu cần deploy lại Apps Script: Deploy → Manage deployments → Edit (giữ nguyên URL để không phải sửa `SCRIPT_URL`). Chi tiết ở `apps-script/SETUP.md`.
 
 ## Cách sửa và triển khai
 
