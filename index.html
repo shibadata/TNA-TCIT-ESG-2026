@@ -168,6 +168,15 @@
   .btn.primary:hover{background:var(--main-d)}
   .btn:disabled{opacity:.5;cursor:not-allowed}
 
+  /* báo lỗi bắt buộc trong panel (chặn Next kiểu Google Form) */
+  .panelerr{background:var(--err-l);border:1px solid var(--err);color:var(--err);border-radius:9px;
+    padding:12px 14px;margin-top:16px;font-size:.88rem;line-height:1.5;display:none}
+  .panelerr.show{display:block}
+  .panelerr b{color:var(--err)}
+  /* highlight câu còn thiếu */
+  .q.qmiss{background:var(--err-l);border-radius:9px;margin:0 -10px;padding-left:10px;padding-right:10px}
+  .q.qmiss>.qlabel{color:var(--err)}
+
   /* review */
   .rev{font-size:.9rem}
   .rev .rrow{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
@@ -536,8 +545,63 @@ function buildPanels(){
 
 function pnav(i){
   const prev = i>0 ? `<button type="button" class="btn ghost" data-go="${i-1}">← Quay lại</button>` : `<span></span>`;
-  const next = `<button type="button" class="btn primary" data-go="${i+1}">Tiếp tục →</button>`;
-  return `<div class="pnav">${prev}${next}</div>`;
+  const next = `<button type="button" class="btn primary" data-next="${i}">Tiếp tục →</button>`;
+  return `<div class="panelerr" data-panelerr="${i}"></div><div class="pnav">${prev}${next}</div>`;
+}
+/* Chặn sang phần sau nếu phần hiện tại còn mục bắt buộc chưa xong (kiểu Google Form). */
+function tryNext(i){
+  const v = collect();
+  const errs = validate(v)[i] || [];
+  if(errs.length){
+    markMissingQuestions(i,v);
+    const box = document.querySelector(`.panelerr[data-panelerr="${i}"]`);
+    if(box){
+      box.classList.add('show');
+      box.innerHTML = `<b>Vui lòng trả lời hết các mục bắt buộc trước khi sang phần tiếp theo.</b><br>Còn thiếu: ${errs.join('; ')}.`;
+    }
+    const tabEl=document.querySelectorAll('.tab')[i]; if(tabEl) tabEl.classList.add('invalid');
+    // cuộn tới câu thiếu đầu tiên
+    const firstMiss = document.querySelector('.panel.active .q.qmiss');
+    if(firstMiss) firstMiss.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  const box = document.querySelector(`.panelerr[data-panelerr="${i}"]`);
+  if(box) box.classList.remove('show');
+  go(i+1);
+}
+/* Khi người dùng sửa: nếu tab hiện tại đã sạch thì gỡ báo đỏ + highlight */
+function clearPanelErrorIfFixed(){
+  if(active>=REVIEW_TAB) return;
+  const box=document.querySelector(`.panelerr[data-panelerr="${active}"]`);
+  if(!box || !box.classList.contains('show')) return; // chỉ xử khi báo đỏ đang hiện
+  const v = collect();
+  const errs = validate(v)[active]||[];
+  if(!errs.length){
+    box.classList.remove('show');
+    document.querySelectorAll('.panel.active .q.qmiss').forEach(q=>q.classList.remove('qmiss'));
+    document.querySelectorAll('.tab')[active].classList.remove('invalid');
+  } else {
+    box.innerHTML = `<b>Vui lòng trả lời hết các mục bắt buộc trước khi sang phần tiếp theo.</b><br>Còn thiếu: ${errs.join('; ')}.`;
+    markMissingQuestions(active,v);
+  }
+}
+/* Điều hướng qua tab-bar / link. Đi lùi tự do; đi tiến phải qua cửa validate từng tab. */
+function requestGo(target){
+  if(target<=active){ go(target); return; }         // lùi hoặc ở yên: cho
+  const v = collect(), e = validate(v);
+  // tìm tab bắt buộc đầu tiên (từ active) còn thiếu, trong đoạn active..target-1
+  for(let i=active;i<target;i++){
+    if(i<REVIEW_TAB && e[i] && e[i].length){ go(i); tryNext(i); return; } // mở panel thiếu rồi hiện báo đỏ
+  }
+  go(target);
+}
+/* Tô đỏ đúng các câu còn thiếu trong panel i */
+function markMissingQuestions(i,v){
+  const panel = document.querySelector('.panel.active');
+  if(!panel) return;
+  panel.querySelectorAll('.q.qmiss').forEach(q=>q.classList.remove('qmiss'));
+  const miss = MISSING_QIDS[i] ? MISSING_QIDS[i](v) : [];
+  miss.forEach(qid=>{ const q=panel.querySelector(`[data-q="${qid}"]`); if(q) q.classList.add('qmiss'); });
 }
 
 /* ---------- tabs ---------- */
@@ -546,7 +610,7 @@ function buildTabs(){
   TABS.forEach((t,i)=>{
     const b = el('button','tab'); b.type='button'; b.dataset.idx=i;
     b.innerHTML = `<span class="dot"></span>${t.label}`;
-    b.onclick = ()=>go(i);
+    b.onclick = ()=>requestGo(i);
     bar.appendChild(b);
   });
 }
@@ -642,6 +706,20 @@ function validate(v){
   // 4.4 optional — không kiểm
   return e;
 }
+/* Map tab -> id các câu (data-q) còn thiếu, để tô đỏ đúng chỗ */
+const MISSING_QIDS = {
+  0:v=>{const m=[];if(!v.job_title)m.push('job_title');if(!v.org_unit||(v.org_unit==='other'&&!v.org_unit_other))m.push('org_unit');if(!v.years_at_company)m.push('years_at_company');if(!v.attended_intro_0904)m.push('attended_intro_0904');return m;},
+  1:v=>{const m=[];if(!v.a1_muctieu)m.push('a1_muctieu');if(!v.a2_esg_giup)m.push('a2_esg_giup');
+    if(!v.a3_uutien.length||v.a3_uutien.length>3||(v.a3_uutien.includes('a3_khac')&&!v.a3_uutien_khac))m.push('a3_uutien');return m;},
+  2:v=>{const m=[];if(!v.b1_kynang_can)m.push('b1_kynang_can');
+    if(B2_ROWS.some(([c])=>v[c]==null)||matrixOtherError(v,'b2'))m.push('b2');return m;},
+  3:v=>{const m=[];if(C1_ROWS.some(([c])=>v[c]==null)||matrixOtherError(v,'c1'))m.push('c1');
+    if(!v.c2_dang_lam)m.push('c2_dang_lam');
+    if(!v.c3_raocan.length||v.c3_raocan.length>3||(v.c3_raocan.includes('c3_khac')&&!v.c3_raocan_khac))m.push('c3_raocan');return m;},
+  4:v=>{const m=[];if(!v.d1_diem_yeu)m.push('d1_diem_yeu');
+    if(!v.d2_hotro.length||(v.d2_hotro.includes('d2_khac')&&!v.d2_hotro_khac))m.push('d2_hotro');
+    if(!v.d3_kyvong)m.push('d3_kyvong');return m;}
+};
 /* Dòng "Khác" matrix: điền text mà chưa chấm điểm (hoặc ngược lại) = lỗi. Bỏ trống cả 2 = OK. */
 function matrixOtherError(v,id){
   for(let i=1;i<=MATRIX_OTHER_MAX;i++){
@@ -850,7 +928,7 @@ function init(){
     if(t.classList && t.classList.contains('othertext')){
       const wrap=t.closest('[data-matrix]'); if(wrap) addOtherRow(wrap.dataset.otherId);
     }
-    saveDraft(); refreshTabStatus();
+    saveDraft(); refreshTabStatus(); clearPanelErrorIfFixed();
     if(active===REVIEW_TAB) renderReview();
   });
   f.addEventListener('change', e=>{
@@ -859,12 +937,13 @@ function init(){
     if(t.type==='checkbox'||t.type==='radio'){ syncOptUI(t); const q=t.closest('.q'); if(q&&q.dataset.max!=null) enforceMax(q); }
     // chấm điểm dòng "Khác" của matrix cũng có thể mở dòng kế
     if(t.type==='radio' && t.closest('tr.otherrow')){ addOtherRow(t.closest('tr.otherrow').dataset.otherrow); }
-    saveDraft(); refreshTabStatus();
+    saveDraft(); refreshTabStatus(); clearPanelErrorIfFixed();
     if(active===REVIEW_TAB) renderReview();
   });
 
   document.addEventListener('click', e=>{
-    const g=e.target.closest('[data-go]'); if(g){ go(+g.dataset.go); }
+    const n=e.target.closest('[data-next]'); if(n){ tryNext(+n.dataset.next); return; }
+    const g=e.target.closest('[data-go]'); if(g){ requestGo(+g.dataset.go); return; }
     if(e.target.id==='submitBtn') submit();
   });
 
