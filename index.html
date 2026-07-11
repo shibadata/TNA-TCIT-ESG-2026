@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Khảo sát Nhu cầu Đào tạo ESG – TCIT</title>
+<style>
+  :root{
+    --main:#0e7c7b;      /* teal đậm */
+    --main-d:#0a605f;
+    --main-l:#e6f2f1;
+    --accent:#7ecced;    /* xanh nhạt */
+    --accent-l:#eaf7fd;
+    --ink:#1c2b2b;
+    --muted:#5f7373;
+    --line:#dde6e5;
+    --bg:#ffffff;
+    --err:#c0392b;
+    --err-l:#fdecea;
+    --ok:#0e7c7b;
+    --radius:12px;
+    --shadow:0 1px 3px rgba(14,124,123,.08),0 8px 28px rgba(14,124,123,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);background:#f4f8f8;line-height:1.55;font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:24px 16px 80px}
+  #intro.intro-hidden{display:none}
+
+  /* Header */
+  .hero{
+    background:linear-gradient(135deg,var(--main) 0%,var(--main-d) 100%);
+    color:#fff;border-radius:var(--radius);padding:28px 26px;box-shadow:var(--shadow);
+    position:relative;overflow:hidden;
+  }
+  .hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.35}
+  .hero h1{font-size:1.5rem;line-height:1.3;margin-bottom:10px;position:relative}
+  .hero p{opacity:.95;font-size:.95rem;position:relative;max-width:64ch;margin-bottom:8px}
+  .hero p:last-child{margin-bottom:0}
+  .hero .badge{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+    padding:3px 10px;border-radius:999px;font-size:.78rem;margin-bottom:14px;letter-spacing:.3px}
+
+  /* Project info block */
+  .proj{background:var(--accent-l);border:1px solid var(--accent);border-radius:var(--radius);
+    padding:16px 18px;margin-top:18px;font-size:.9rem;color:var(--main-d)}
+  .proj b{color:var(--main-d)}
+  .proj ul{list-style:none;display:grid;gap:6px;grid-template-columns:1fr;margin-top:6px}
+  @media(min-width:560px){.proj ul{grid-template-columns:1fr 1fr}}
+  .proj li::before{content:"–";color:var(--main);font-weight:700;margin-right:8px}
+
+  /* NDA / commitment note */
+  .official{background:#fff;border:1px solid var(--line);border-left:4px solid var(--main);
+    border-radius:9px;padding:14px 16px;margin-top:14px;font-size:.85rem;color:var(--muted)}
+  .official b{color:var(--main-d)}
+
+  /* Tabs */
+  .tabs{position:sticky;top:0;z-index:20;background:#f4f8f8;padding:14px 0 10px;margin-top:8px}
+  .tabbar{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    padding-bottom:4px;scrollbar-width:thin}
+  .tab{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--muted);
+    padding:9px 14px;border-radius:999px;font-size:.88rem;cursor:pointer;white-space:nowrap;
+    display:flex;align-items:center;gap:7px;transition:.15s;font-weight:500}
+  .tab:hover{border-color:var(--accent)}
+  .tab.active{background:var(--main);color:#fff;border-color:var(--main);box-shadow:0 2px 8px rgba(14,124,123,.25)}
+  .tab .dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .tab.done .dot{background:var(--accent)}
+  .tab.active .dot{background:#fff}
+  .tab.invalid .dot{background:var(--err)}
+
+  .progress{height:6px;background:var(--line);border-radius:999px;margin-top:10px;overflow:hidden}
+  .progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--main),var(--accent));
+    border-radius:999px;transition:width .3s}
+
+  /* Panels / cards */
+  .panel{display:none;animation:fade .25s ease}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 22px;margin-top:14px;box-shadow:var(--shadow)}
+  .card h2{font-size:1.15rem;color:var(--main-d);margin-bottom:4px}
+  .card .sub{color:var(--muted);font-size:.88rem;margin-bottom:8px}
+  /* Mô tả mục tiêu từng phần (task 9) */
+  .partaim{background:var(--main-l);border:1px solid var(--accent);border-radius:9px;
+    padding:12px 14px;margin:12px 0 4px;font-size:.86rem;color:var(--main-d);line-height:1.5}
+  .partaim b{color:var(--main-d)}
+
+  .q{padding:16px 0;border-top:1px dashed var(--line)}
+  .q:first-of-type{border-top:0;padding-top:4px}
+  .q label.qlabel{display:block;font-weight:600;margin-bottom:8px;font-size:.96rem}
+  .q .hint{color:var(--muted);font-size:.82rem;margin-bottom:8px;font-weight:400}
+  /* Ví dụ gợi ý (task 11) */
+  .eg{background:var(--accent-l);border:1px dashed var(--accent);border-radius:8px;
+    padding:9px 12px;margin-bottom:8px;font-size:.8rem;color:var(--main-d);line-height:1.5}
+  .eg b{color:var(--main-d)}
+  .req{color:var(--err);font-weight:700;margin-left:3px}
+  .optlab{color:var(--muted);font-weight:400;font-size:.8rem;margin-left:6px}
+
+  input[type=text],input[type=number],textarea,select{
+    width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 12px;
+    font:inherit;color:var(--ink);background:#fff;transition:.15s}
+  select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%235f7373' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--main);box-shadow:0 0 0 3px var(--main-l)}
+  textarea{min-height:96px;resize:vertical}
+  .counter{text-align:right;font-size:.74rem;color:var(--muted);margin-top:3px}
+  .otherinput{margin-top:8px}
+
+  /* choices */
+  .opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--line);
+    border-radius:9px;cursor:pointer;margin-bottom:8px;transition:.12s;background:#fff}
+  .opt:hover{border-color:var(--accent);background:var(--accent-l)}
+  .opt.sel{border-color:var(--main);background:var(--main-l)}
+  .opt input{margin-top:3px;accent-color:var(--main);width:17px;height:17px;flex:0 0 auto}
+  .opt .txt{font-size:.92rem}
+  .opt.disabled{opacity:.5;cursor:not-allowed}
+  .otherbox{margin-top:-2px;margin-bottom:8px;padding-left:28px;display:none}
+  .otherbox.show{display:block}
+
+  /* matrix */
+  .matrix-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:9px}
+  table.matrix{border-collapse:collapse;width:100%;min-width:560px}
+  table.matrix th,table.matrix td{padding:9px 8px;text-align:center;font-size:.82rem;border-bottom:1px solid var(--line)}
+  table.matrix thead th{background:var(--main-l);color:var(--main-d);font-weight:600;position:sticky;top:0}
+  table.matrix tfoot th{background:var(--accent-l);color:var(--muted);font-weight:600;border-top:1px solid var(--line);border-bottom:0}
+  table.matrix tbody th{text-align:left;font-weight:500;color:var(--ink);font-size:.88rem;line-height:1.35;min-width:180px}
+  table.matrix tbody tr:hover{background:var(--accent-l)}
+  table.matrix input[type=radio]{accent-color:var(--main);width:18px;height:18px;cursor:pointer}
+  table.matrix .cell{display:inline-flex;align-items:center;justify-content:center;width:100%;cursor:pointer}
+  table.matrix .celllab{display:none}   /* desktop: chỉ hiện ô tròn */
+  /* dòng "Khác" tự nhập trong matrix */
+  table.matrix tr.otherrow th{padding:6px 8px}
+  table.matrix tr.otherrow input.othertext{width:100%;min-width:170px;font-size:.85rem;padding:8px 10px}
+  table.matrix tr.otherrow th{background:#fbfdfd}
+
+  /* ===== Matrix dạng card dọc trên mobile ===== */
+  @media(max-width:640px){
+    .matrix-wrap{overflow:visible;border:0;border-radius:0}
+    table.matrix{min-width:0;width:100%;display:block}
+    table.matrix thead,table.matrix tfoot{display:none}
+    table.matrix tbody,table.matrix tr,table.matrix th,table.matrix td{display:block;width:100%}
+    table.matrix tr{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:12px;background:#fff}
+    table.matrix tr:hover{background:#fff}
+    table.matrix tbody th{padding:0 0 10px;min-width:0;font-weight:600;color:var(--main-d);font-size:.95rem;border:0}
+    table.matrix td{padding:0;border:0;text-align:left}
+    table.matrix .cell{justify-content:flex-start;gap:10px;padding:9px 11px;margin-bottom:7px;
+      border:1px solid var(--line);border-radius:8px;background:#fff;transition:.12s}
+    table.matrix td:last-child .cell{margin-bottom:0}
+    table.matrix .cell:has(input:checked){border-color:var(--main);background:var(--main-l)}
+    table.matrix input[type=radio]{flex:0 0 auto}
+    table.matrix .celllab{display:inline;font-size:.9rem;color:var(--ink)}
+    table.matrix tr.otherrow input.othertext{padding:10px 11px}
+  }
+
+  /* nav buttons inside panel */
+  .pnav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+  .btn{border:0;border-radius:9px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer;transition:.15s}
+  .btn.ghost{background:#fff;border:1px solid var(--line);color:var(--main-d)}
+  .btn.ghost:hover{border-color:var(--main)}
+  .btn.primary{background:var(--main);color:#fff}
+  .btn.primary:hover{background:var(--main-d)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+
+  /* review */
+  .rev{font-size:.9rem}
+  .rev .rrow{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .rev .rk{flex:0 0 42%;color:var(--muted)}
+  .rev .rv{flex:1;font-weight:500;word-break:break-word}
+  .rev .rv.empty{color:var(--line);font-weight:400}
+  .miss{background:var(--err-l);border:1px solid var(--err);color:var(--err);border-radius:9px;
+    padding:12px 14px;margin-bottom:14px;font-size:.88rem;display:none}
+  .miss.show{display:block}
+  .miss a{color:var(--err);font-weight:700;cursor:pointer;text-decoration:underline}
+  .resubmit-note{background:var(--main-l);border:1px solid var(--accent);border-radius:9px;
+    padding:12px 14px;margin-bottom:14px;font-size:.85rem;color:var(--main-d);line-height:1.5}
+  .resubmit-note b{color:var(--main-d)}
+
+  .thanks{text-align:center;padding:40px 20px;display:none}
+  .thanks.show{display:block}
+  .thanks .ic{width:64px;height:64px;border-radius:50%;background:var(--main-l);color:var(--main);
+    display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px}
+  .thanks h2{color:var(--main-d);margin-bottom:8px}
+  .thanks p{color:var(--muted);max-width:52ch;margin:0 auto 8px;font-size:.92rem}
+
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);
+    background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:.9rem;
+    opacity:0;transition:.3s;z-index:50}
+  .toast.show{transform:translateX(-50%);opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+  <!-- ======= HERO + PROJECT INFO ======= -->
+  <div id="intro">
+  <header class="hero">
+    <span class="badge">CÙNG KIẾN TẠO ĐỊNH HƯỚNG ESG · TCIT</span>
+    <h1>Chương trình ESG sắp tới nên bắt đầu từ đâu?</h1>
+    <p>Người hiểu công việc tại TCIT rõ nhất chính là anh/chị. Nội dung đào tạo và tư vấn sắp tới sẽ được thiết kế dựa trên chia sẻ thực tế của các đơn vị, thay vì theo một khuôn mẫu có sẵn.</p>
+    <p>Khảo sát không nhằm đánh giá đúng hay sai. Mọi góc nhìn, mối bận tâm và kỳ vọng đều được ghi nhận và trực tiếp định hình chương trình chung.</p>
+  </header>
+
+  <div class="proj">
+    <b>Vài mốc chính của dự án</b>
+    <ul>
+      <li>Buổi giới thiệu &amp; chia sẻ ESG: 09/04/2026</li>
+      <li>Mong nhận phản hồi trước: 18/07/2026</li>
+      <li>Thời gian đồng hành: 20/07 – 30/10/2026</li>
+      <li>Trọng tâm: năng lực &amp; nhận thức ESG nội bộ</li>
+    </ul>
+  </div>
+
+  <div class="official">
+    <b>Cam kết bảo mật.</b> Mọi phản hồi được bảo mật theo thỏa thuận bảo mật (NDA) của dự án, chỉ dùng để thiết kế nội dung phù hợp với TCIT. Dữ liệu không dùng để đánh giá cá nhân hay đơn vị, không chia sẻ ra ngoài đội dự án, và chỉ được trình bày ở dạng tổng hợp ẩn danh. Mọi chia sẻ thẳng thắn, kể cả điều chưa tiện nói trong một cuộc họp đông người, đều được trân trọng.
+  </div>
+  </div><!-- /#intro -->
+
+  <!-- ======= TABS ======= -->
+  <div class="tabs">
+    <div class="tabbar" id="tabbar"></div>
+    <div class="progress"><i id="progbar"></i></div>
+  </div>
+
+  <form id="form" autocomplete="off">
+    <!-- honeypot -->
+    <div class="hp"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+    <div id="panels"></div>
+  </form>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — dán sau khi deploy Apps Script (xem SETUP-tna-survey3.md)
+   ============================================================ */
+const CONFIG = {
+  SCRIPT_URL: "",            // <-- dán Web App URL của Apps Script vào đây
+  TOKEN: "DOI-CHUOI-NAY",    // <-- dán SECRET token (khớp Code-tna-survey3.gs)
+  DRAFT_KEY: "tna_esg_tcit_v3_draft"
+};
+
+/* ============================================================
+   DATA DICTIONARY (nguồn sự thật — khớp Code-tna-survey3.gs)
+   ============================================================ */
+const ORG_UNITS = [
+  ["dhsx","Trung tâm Điều hành Sản xuất (ĐHSX)"],
+  ["hcns","Phòng Hành chính Nhân sự (HCNS)"],
+  ["tckt","Phòng Tài chính Kế toán (TCKT)"],
+  ["kythuat","Phòng Kỹ thuật (kể cả IT)"],
+  ["kinhdoanh","Phòng Kinh doanh"],
+  ["bld","Ban Lãnh đạo"],
+  ["other","Khác"]
+];
+
+const A3_OPTS = [
+  ["a3_giam_chiphi","Giảm chi phí vận hành (nhiên liệu, điện, thời gian chờ)"],
+  ["a3_tang_nangsuat","Tăng năng suất khai thác cầu bến và bãi"],
+  ["a3_dap_ung_hangtau","Đáp ứng yêu cầu ESG của hãng tàu quốc tế"],
+  ["a3_he_thong_data","Xây dựng hệ thống đo lường và quản lý dữ liệu ESG"],
+  ["a3_attld_minhbach","Nâng cao an toàn lao động và minh bạch dữ liệu an toàn"],
+  ["a3_cang_xanh_chungnhan","Cải thiện hình ảnh cảng xanh và chứng nhận quốc tế"],
+  ["a3_toiuu_noibo","Tối ưu quy trình nội bộ và phối hợp liên phòng ban"],
+  ["a3_khac","Khác"]
+];
+const C3_OPTS = [
+  ["c3_chua_hieu_esg","Chưa hiểu rõ ESG là gì và liên quan gì đến công việc"],
+  ["c3_thieu_congcu","Không có công cụ / hệ thống để thu thập dữ liệu"],
+  ["c3_khong_ro_trachnhiem","Không rõ ai chịu trách nhiệm về ESG trong bộ phận"],
+  ["c3_qua_ban","Quá bận với công việc vận hành hằng ngày"],
+  ["c3_chua_co_kpi","Chưa có KPI hoặc mục tiêu ESG rõ ràng"],
+  ["c3_thieu_phoihop","Thiếu sự phối hợp giữa các phòng ban"],
+  ["c3_chua_thay_loiich","Chưa thấy lợi ích cụ thể của việc làm ESG"],
+  ["c3_khac","Khác"]
+];
+const D2_OPTS = [
+  ["d2_daotao_coban","Đào tạo kiến thức ESG cơ bản cho nhân viên"],
+  ["d2_huongdan_thu_data","Hướng dẫn cách thu thập dữ liệu ESG cụ thể"],
+  ["d2_xaydung_kpi","Xây dựng KPI ESG riêng cho bộ phận"],
+  ["d2_congcu_bieumau","Công cụ / biểu mẫu đơn giản để ghi chép dữ liệu"],
+  ["d2_raci","Phân công rõ ràng ai làm gì (RACI)"],
+  ["d2_workshop_casestudy","Workshop thực hành với case study ngành cảng"],
+  ["d2_cam_ket_lanhdao","Hỗ trợ từ lãnh đạo / cam kết của Ban điều hành"],
+  ["d2_khac","Khác"]
+];
+const B2_ROWS = [
+  ["b2_quydinh","Hiểu biết về quy định quốc tế (EU ETS, IMO 2030/2050)"],
+  ["b2_ghg","Kiểm kê khí nhà kính (GHG Scope 1, 2, 3)"],
+  ["b2_nangluong","Quản lý năng lượng và tối ưu hiệu suất thiết bị"],
+  ["b2_data","Thu thập, xử lý và báo cáo dữ liệu ESG"],
+  ["b2_hsse","An toàn lao động và quản lý rủi ro HSSE"],
+  ["b2_cangxanh","Tiêu chuẩn cảng xanh (GPAS, TCCS 02:2022)"],
+  ["b2_kpi","Thiết lập KPI ESG và hệ thống theo dõi"],
+  ["b2_phoihop","Phối hợp liên phòng ban về ESG"],
+  ["b2_dichesg","Biết cách \"dịch\" ESG sang ngôn ngữ vận hành"]
+];
+const C1_ROWS = [
+  ["c1_esg_la_gi","ESG là gì và tại sao quan trọng với TCIT"],
+  ["c1_scope12","Phát thải Scope 1 (trực tiếp) và Scope 2 (gián tiếp) tại cảng"],
+  ["c1_euets","EU ETS và tác động chi phí carbon đến hãng tàu"],
+  ["c1_cangxanh","Tiêu chuẩn Cảng Xanh GPAS và TCCS 02:2022"],
+  ["c1_nangluong","Cách đo lường và báo cáo hiệu quả năng lượng"],
+  ["c1_materiality","Chủ đề trọng yếu (Materiality) và cách xác định"],
+  ["c1_esms","Hệ thống quản lý ESG (ESMS) là gì"],
+  ["c1_vithe","Vị thế ESG của TCIT so với Gemalink, CMIT, PTP"]
+];
+const YEAR_OPTS = [
+  ["duoi_1","Dưới 1 năm"],
+  ["1","1 năm"],["2","2 năm"],["3","3 năm"],["4","4 năm"],["5","5 năm"],
+  ["6","6 năm"],["7","7 năm"],["8","8 năm"],["9","9 năm"],
+  ["10_15","10 – 15 năm"],["tren_15","Trên 15 năm"]
+];
+const B2_SCALE = ["Rất thấp","Thấp","Trung bình","Cao","Rất cao"];
+const C1_SCALE = ["Chưa biết gì","Nghe qua","Hiểu cơ bản","Hiểu rõ","Hướng dẫn được"];
+const MATRIX_OTHER_MAX = 3;
+
+/* ============================================================
+   TABS DEFINITION
+   ============================================================ */
+const TABS = [
+  {id:"tab-info", label:"Thông tin"},
+  {id:"tab-a",    label:"A · Điều cần đạt"},
+  {id:"tab-b",    label:"B · Điều cần biết"},
+  {id:"tab-c",    label:"C · Hiện trạng"},
+  {id:"tab-d",    label:"D · Đồng thiết kế"},
+  {id:"tab-rev",  label:"Xem & Gửi"}
+];
+const REVIEW_TAB = 5;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let active = 0;
+let hasSubmitted = false;
+
+/* ---------- helpers to build markup ---------- */
+const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+
+function egBlock(html){ return `<div class="eg"><b>Ví dụ:</b> ${html}</div>`; }
+
+function textQ(id, label, req, long, opts){
+  opts = opts || {};
+  const max = long ? 1000 : 200;
+  const optTag = req ? '<span class="req">*</span>' : '<span class="optlab">(không bắt buộc)</span>';
+  const hint = opts.hint ? `<div class="hint">${opts.hint}</div>` : '';
+  const eg   = opts.eg ? egBlock(opts.eg) : '';
+  return `<div class="q" data-q="${id}">
+    <label class="qlabel" for="${id}">${label}${optTag}</label>
+    ${hint}${eg}
+    ${long?`<textarea id="${id}" name="${id}" maxlength="${max}" placeholder="${opts.placeholder||''}"></textarea>
+      <div class="counter"><span data-count="${id}">0</span>/${max}</div>`
+      :`<input type="text" id="${id}" name="${id}" maxlength="${max}" placeholder="${opts.placeholder||''}">`}
+  </div>`;
+}
+function plainSelectQ(id,label,req,opts){
+  return `<div class="q" data-q="${id}">
+    <label class="qlabel" for="${id}">${label}${req?'<span class="req">*</span>':''}</label>
+    <select id="${id}" name="${id}" style="max-width:280px">
+      <option value="">— Vui lòng chọn —</option>
+      ${opts.map(([code,txt])=>`<option value="${code}">${txt}</option>`).join('')}
+    </select>
+  </div>`;
+}
+function selectQ(id,label,req,opts,otherId){
+  return `<div class="q" data-q="${id}">
+    <label class="qlabel" for="${id}">${label}${req?'<span class="req">*</span>':''}</label>
+    <select id="${id}" name="${id}" data-other-target="${otherId}">
+      <option value="">— Vui lòng chọn —</option>
+      ${opts.map(([code,txt])=>`<option value="${code}">${txt}</option>`).join('')}
+    </select>
+    <input type="text" id="${otherId}" name="${otherId}" class="otherinput" maxlength="120"
+      placeholder="Vui lòng ghi rõ tên đơn vị" style="display:none">
+  </div>`;
+}
+function singleQ(id,label,req,opts){
+  return `<div class="q" data-q="${id}">
+    <label class="qlabel">${label}${req?'<span class="req">*</span>':''}</label>
+    ${opts.map(o=>`<label class="opt"><input type="radio" name="${id}" value="${o}"><span class="txt">${o}</span></label>`).join('')}
+  </div>`;
+}
+function multiQ(id,label,req,opts,max,egHtml){
+  const hint = max ? `Anh/chị có thể chọn tối đa ${max} mục.` : `Anh/chị có thể chọn tất cả các mục phù hợp.`;
+  return `<div class="q" data-q="${id}" data-max="${max||0}">
+    <label class="qlabel">${label}${req?'<span class="req">*</span>':''}</label>
+    <div class="hint">${hint}</div>
+    ${egHtml?egBlock(egHtml):''}
+    ${opts.map(([code,txt])=>`
+      <label class="opt" data-code="${code}"><input type="checkbox" name="${id}" value="${code}"><span class="txt">${txt}</span></label>
+      ${code.endsWith('_khac')?`<div class="otherbox" data-other="${id}"><input type="text" id="${id}_khac" maxlength="200" placeholder="Anh/chị vui lòng ghi rõ..."></div>`:''}
+    `).join('')}
+  </div>`;
+}
+/* Ô điểm 1..5 cho 1 dòng matrix */
+function scoreCells(name,scale){
+  return scale.map((s,i)=>`<td><label class="cell"><input type="radio" name="${name}" value="${i+1}"><span class="celllab">${i+1} ${s}</span></label></td>`).join('');
+}
+/* Một dòng "Khác": text + 5 ô điểm. Tạo động khi dòng trước đã đủ text+điểm (task 5). */
+function otherRowHTML(id,i,scale){
+  return `<th><input type="text" class="othertext" name="${id}_other_${i}_text" maxlength="200"
+    placeholder="Xin vui lòng ghi rõ thêm nội dung khác (nếu có)"></th>${scoreCells(`${id}_other_${i}_score`,scale)}`;
+}
+/* Matrix likert + tối đa 3 dòng "Khác" tự nhập (task 5) */
+function matrixQ(id,label,rows,scale,egHtml){
+  const scaleHead = `<th style="text-align:left">Nội dung</th>${scale.map((s,i)=>`<th>${i+1}<br><span style="font-weight:400">${s}</span></th>`).join('')}`;
+  const fixedRows = rows.map(([code,txt])=>`<tr data-row="${code}"><th>${txt}</th>${scoreCells(code,scale)}</tr>`).join('');
+  // dòng "Khác" đầu tiên (index 1) hiện sẵn; dòng kế tạo động khi dòng này đủ text + điểm
+  const firstOther = `<tr class="otherrow" data-otherrow="${id}" data-oidx="1">${otherRowHTML(id,1,scale)}</tr>`;
+  return `<div class="q" data-q="${id}" data-matrix="1" data-rows="${rows.map(r=>r[0]).join(',')}" data-other-id="${id}">
+    <label class="qlabel">${label}<span class="req">*</span></label>
+    ${egHtml?egBlock(egHtml):''}
+    <div class="matrix-wrap"><table class="matrix">
+      <thead><tr>${scaleHead}</tr></thead>
+      <tbody>
+        ${fixedRows}
+        ${firstOther}
+      </tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ---------- build panels ---------- */
+function buildPanels(){
+  const P = document.getElementById('panels');
+
+  // INFO
+  const info = el('div','panel'); info.dataset.tab='tab-info';
+  info.innerHTML = `<div class="card">
+    <h2>Đôi nét về người trả lời</h2>
+    <div class="sub">Giúp đội dự án đọc các ý kiến theo đúng vị trí và đơn vị công tác; không dùng để đánh giá cá nhân.</div>
+    ${textQ("nickname","Anh/chị muốn được gọi là gì?",false,false,{
+      hint:"Một biệt danh dễ nhớ do anh/chị tự đặt, dùng lại chính biệt danh này nếu sau đó muốn gửi bổ sung ý kiến.",
+      placeholder:"Ví dụ: Anh Hòa Kỹ thuật, Chị Lan CSKH..."})}
+    ${textQ("job_title","Chức danh / Vị trí công việc",true,false,{placeholder:""})}
+    ${selectQ("org_unit","Đơn vị công tác",true,ORG_UNITS,"org_unit_other")}
+    ${plainSelectQ("years_at_company","Số năm làm việc tại TCIT",true,YEAR_OPTS)}
+    ${singleQ("attended_intro_0904","Anh/chị đã tham dự buổi giới thiệu, chia sẻ ESG ngày 09/04 chưa?",true,["Có","Không"])}
+    ${pnav(0)}
+  </div>`;
+  P.appendChild(info);
+
+  // A
+  const a = el('div','panel'); a.dataset.tab='tab-a';
+  a.innerHTML = `<div class="card">
+    <h2>Phần A · Điều TCIT cần đạt</h2>
+    <div class="partaim">Phần này cùng nhìn về <b>đích đến</b>: ESG chỉ có ý nghĩa khi phục vụ những mục tiêu mà đơn vị thấy quan trọng cho TCIT. Ý kiến ở đây giúp chương trình bám sát ưu tiên thực tế, thay vì lý thuyết chung.</div>
+    ${textQ("a1_muctieu","1.1 — Trong 12–24 tháng tới, đâu là 3 mục tiêu quan trọng nhất của TCIT?",true,true,{
+      hint:"Nêu những kết quả cụ thể mà TCIT cần đạt: về vận hành, khách hàng, hay vị thế cạnh tranh.",
+      eg:"Tăng năng suất khai thác; giữ chân hãng tàu Premier Alliance; giảm chi phí nhiên liệu."})}
+    ${textQ("a2_esg_giup","1.2 — Trong các mục tiêu đó, ESG có thể hỗ trợ ở những điểm nào?",true,true,{
+      hint:"Không cần dùng thuật ngữ ESG. Buổi 09/04 có nhắc cách nghĩ: ESG = Chi phí ↓ / Hiệu quả ↑ / Rủi ro ↓; có thể liên hệ với thực tế đơn vị.",
+      eg:"ESG giúp giảm thời gian thiết bị chạy không tải, nhờ đó vừa giảm chi phí nhiên liệu vừa giảm phát thải."})}
+    ${multiQ("a3_uutien","1.3 — Những hướng nào nên được ưu tiên để tạo giá trị sớm nhất?",true,A3_OPTS,3)}
+    ${pnav(1)}
+  </div>`;
+  P.appendChild(a);
+
+  // B
+  const b = el('div','panel'); b.dataset.tab='tab-b';
+  b.innerHTML = `<div class="card">
+    <h2>Phần B · Điều đơn vị cần hiểu để cùng làm được</h2>
+    <div class="partaim">Phần này giúp đội dự án chọn đúng nội dung và mức độ đi sâu, tránh dàn trải hay lặp lại điều đã rõ. Mức đánh giá phản ánh <b>nhu cầu của đơn vị</b>, không phản ánh năng lực cá nhân.</div>
+    ${textQ("b1_kynang_can","2.1 — Để triển khai ESG hiệu quả hơn, đơn vị cần thêm kiến thức hay kỹ năng gì?",true,true,{
+      hint:"Nêu những điều nếu được làm rõ sẽ giúp công việc hằng ngày dễ hơn.",
+      eg:"Hiểu cách tính phát thải Scope 1/Scope 2; biết cách thu thập dữ liệu năng lượng; hiểu KPI ESG liên quan đến đơn vị mình."})}
+    ${matrixQ("b2",`2.2 — Mỗi năng lực sau <b>quan trọng</b> đến mức nào với công việc của đơn vị tại TCIT?`,B2_ROWS,B2_SCALE,
+      "Nếu có năng lực quan trọng mà danh sách chưa nêu, ghi thêm ở dòng \"Khác\" phía dưới và chọn mức phù hợp. Hoàn thành một dòng sẽ mở thêm dòng mới, tối đa 3 dòng.")}
+    ${pnav(2)}
+  </div>`;
+  P.appendChild(b);
+
+  // C
+  const c = el('div','panel'); c.dataset.tab='tab-c';
+  c.innerHTML = `<div class="card">
+    <h2>Phần C · Điểm xuất phát hiện tại</h2>
+    <div class="partaim">Không có đáp án đúng hay sai, và không có mức nào là "đáng lẽ phải biết". Phần này chỉ giúp đội dự án thiết kế nội dung cho vừa sức và nhận diện phần cần hỗ trợ; kết quả <b>không dùng để chấm điểm cá nhân hay đơn vị</b>, chỉ được tổng hợp ẩn danh.</div>
+    ${matrixQ("c1",`3.1 — Mức độ quen thuộc <b>hiện tại</b> của anh/chị với mỗi nội dung sau?`,C1_ROWS,C1_SCALE,
+      "Nếu có nội dung muốn tự đánh giá thêm mà danh sách chưa có, ghi ở dòng \"Khác\" và chọn mức phù hợp. Tối đa 3 dòng.")}
+    ${textQ("c2_dang_lam","3.2 — Hiện đơn vị đang làm gì có liên quan đến ESG (dù chưa gọi tên là ESG)?",true,true,{
+      hint:"Nhiều việc làm hằng ngày thực ra đã là ESG, chỉ chưa được gọi tên hay đo lường. Những việc đang làm tốt cũng rất đáng ghi nhận.",
+      eg:"Theo dõi tiêu hao nhiên liệu; kiểm tra an toàn hằng ngày; ghi nhận giờ chạy thiết bị; phân loại chất thải."})}
+    ${multiQ("c3_raocan","3.3 — Điều gì đang khiến việc triển khai ESG ở đơn vị khó hơn?",true,C3_OPTS,3)}
+    ${pnav(3)}
+  </div>`;
+  P.appendChild(c);
+
+  // D
+  const d = el('div','panel'); d.dataset.tab='tab-d';
+  d.innerHTML = `<div class="card">
+    <h2>Phần D · Cùng thiết kế cách làm phù hợp</h2>
+    <div class="partaim">Phần này là nơi đơn vị <b>đặt hàng cho dự án</b>: nên hỗ trợ gì, và mong thấy điều gì khi dự án kết thúc. Ý kiến ở đây sẽ được dùng để chọn nội dung thảo luận và các bước tiếp theo.</div>
+    ${textQ("d1_diem_yeu","4.1 — Theo anh/chị, TCIT cần củng cố điểm nào để đi nhanh và vững hơn về ESG?",true,true,{
+      hint:"Có thể là quy trình, dữ liệu, phối hợp, nguồn lực hay cách ra quyết định. Buổi 09/04 có nhắc 3 khoảng trống: thương hiệu xanh, năng lượng, và dữ liệu.",
+      eg:"Dữ liệu còn rời rạc, chưa có đầu mối tổng hợp; một số cảng đã công bố chứng nhận cảng xanh, TCIT thì chưa."})}
+    ${multiQ("d2_hotro","4.2 — Để thu hẹp khoảng trống đó, đơn vị muốn nhận những hỗ trợ nào?",true,D2_OPTS,0)}
+    ${textQ("d3_kyvong","4.3 — Anh/chị mong dự án ESG này mang lại điều gì thiết thực nhất (07–10/2026)?",true,true,{
+      hint:"Ghi ngắn gọn 1–2 câu về điều muốn thấy sau khi dự án hoàn thành.",
+      eg:"TCIT có bộ KPI ESG rõ ràng và biết mình đang ở đâu so với chuẩn quốc tế."})}
+    ${textQ("d4_chia_se","4.4 — Còn điều gì muốn chia sẻ, gửi gắm hay lưu ý thêm với đội dự án không?",false,true,{
+      hint:"Không bắt buộc. Đây là chỗ dành cho điều chưa được hỏi, hoặc ý kiến nhạy cảm cần được lưu ý riêng."})}
+    ${pnav(4)}
+  </div>`;
+  P.appendChild(d);
+
+  // REVIEW
+  const r = el('div','panel'); r.dataset.tab='tab-rev';
+  r.innerHTML = `<div class="card">
+    <h2>Xem kỹ trước khi gửi</h2>
+    <div class="sub">Vui lòng kiểm tra lại một lượt các câu trả lời bên dưới trước khi gửi.</div>
+    <div class="resubmit-note">
+      <b>Nếu sau này muốn bổ sung, cập nhật hay thay đổi ý kiến:</b> chỉ cần điền và gửi lại một bản mới với <b>cùng biệt danh</b> đã ghi ở mục "Anh/chị muốn được gọi là gì?". Đội dự án sẽ nhận ra đây là bản cập nhật cùng một người, không cần mã số hay thao tác gì thêm.
+    </div>
+    <div class="miss" id="missbox"></div>
+    <div class="rev" id="reviewlist"></div>
+    <div class="pnav">
+      <button type="button" class="btn ghost" data-go="4">← Quay lại</button>
+      <button type="button" class="btn primary" id="submitBtn">Gửi ý kiến</button>
+    </div>
+  </div>
+  <div class="thanks card" id="thanks">
+    <div class="ic">✓</div>
+    <h2>Cảm ơn anh/chị đã dành thời gian chia sẻ</h2>
+    <p>Mọi ý kiến đã được ghi nhận và sẽ trực tiếp góp phần định hình chương trình ESG sắp tới của TCIT. Đội dự án thật sự trân trọng thời gian và sự thẳng thắn của anh/chị.</p>
+    <p>Nếu cần bổ sung, cập nhật hay thay đổi ý kiến, chỉ cần gửi lại một bản mới với <b>cùng biệt danh</b> đã dùng lần này — đội dự án sẽ nhận ra đó là bản cập nhật cùng một người.</p>
+  </div>`;
+  P.appendChild(r);
+}
+
+function pnav(i){
+  const prev = i>0 ? `<button type="button" class="btn ghost" data-go="${i-1}">← Quay lại</button>` : `<span></span>`;
+  const next = `<button type="button" class="btn primary" data-go="${i+1}">Tiếp tục →</button>`;
+  return `<div class="pnav">${prev}${next}</div>`;
+}
+
+/* ---------- tabs ---------- */
+function buildTabs(){
+  const bar = document.getElementById('tabbar');
+  TABS.forEach((t,i)=>{
+    const b = el('button','tab'); b.type='button'; b.dataset.idx=i;
+    b.innerHTML = `<span class="dot"></span>${t.label}`;
+    b.onclick = ()=>go(i);
+    bar.appendChild(b);
+  });
+}
+function go(i){
+  active = i;
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.dataset.tab===TABS[i].id));
+  document.querySelectorAll('.tab').forEach((t,idx)=>t.classList.toggle('active', idx===i));
+  document.getElementById('intro').classList.toggle('intro-hidden', i!==0);
+  refreshTabStatus();
+  if(i===REVIEW_TAB) renderReview();
+  centerActiveTab();
+  scrollToPanelTop();
+}
+function centerActiveTab(){
+  const bar = document.getElementById('tabbar');
+  const t = bar.querySelector('.tab.active');
+  if(!t) return;
+  const target = t.offsetLeft - (bar.clientWidth - t.offsetWidth)/2;
+  bar.scrollTo({left: Math.max(0, target), behavior:'smooth'});
+}
+function scrollToPanelTop(){
+  const tabsEl  = document.querySelector('.tabs');
+  const panel   = document.querySelector('.panel.active');
+  if(!panel) return;
+  const stickyH = tabsEl.offsetHeight;
+  const y = panel.getBoundingClientRect().top + window.scrollY - stickyH - 12;
+  window.scrollTo({top: Math.max(0, y), behavior:'smooth'});
+}
+
+/* ============================================================
+   COLLECT + VALIDATION (khớp Code-tna-survey3.gs)
+   ============================================================ */
+function collect(){
+  const f = document.getElementById('form');
+  const v = {};
+  const textIds = ["nickname","job_title","org_unit","org_unit_other","years_at_company",
+    "a1_muctieu","a2_esg_giup","b1_kynang_can","c2_dang_lam","d1_diem_yeu","d3_kyvong","d4_chia_se"];
+  textIds.forEach(id=>{ const e=f.elements[id]; if(e) v[id]=(e.value||"").trim(); });
+  const ws=f.querySelector('input[name="attended_intro_0904"]:checked'); v.attended_intro_0904 = ws?ws.value:"";
+  // multi
+  [["a3_uutien",A3_OPTS],["c3_raocan",C3_OPTS],["d2_hotro",D2_OPTS]].forEach(([id])=>{
+    v[id]=[...f.querySelectorAll(`input[name="${id}"]:checked`)].map(x=>x.value);
+    const ob=f.querySelector(`#${id}_khac`); if(ob) v[id+"_khac"]=ob.value.trim();
+  });
+  // matrix fixed rows
+  [B2_ROWS,C1_ROWS].forEach(rows=>{
+    rows.forEach(([code])=>{ const c=f.querySelector(`input[name="${code}"]:checked`); v[code]=c?+c.value:null; });
+  });
+  // matrix other rows
+  ["b2","c1"].forEach(id=>{
+    for(let i=1;i<=MATRIX_OTHER_MAX;i++){
+      const t=f.querySelector(`input[name="${id}_other_${i}_text"]`);
+      const s=f.querySelector(`input[name="${id}_other_${i}_score"]:checked`);
+      v[`${id}_other_${i}_text`]  = t ? t.value.trim() : "";
+      v[`${id}_other_${i}_score`] = s ? +s.value : null;
+    }
+  });
+  v.website = f.elements["website"].value; // honeypot
+  return v;
+}
+
+/* trả về {tabIdx: [danh sách lỗi]} */
+function validate(v){
+  const e = {0:[],1:[],2:[],3:[],4:[]};
+  // info (tab 0)
+  if(!v.job_title) e[0].push("Chức danh / Vị trí");
+  if(!v.org_unit) e[0].push("Phòng ban");
+  else if(v.org_unit==="other" && !v.org_unit_other) e[0].push("Ghi rõ phòng ban khác");
+  if(!v.years_at_company) e[0].push("Số năm gắn bó");
+  if(!v.attended_intro_0904) e[0].push("Tham dự buổi 09/04");
+  // A (tab1)
+  if(!v.a1_muctieu) e[1].push("Câu 1.1");
+  if(!v.a2_esg_giup) e[1].push("Câu 1.2");
+  if(!v.a3_uutien.length) e[1].push("Câu 1.3 (chọn ít nhất 1)");
+  else if(v.a3_uutien.length>3) e[1].push("Câu 1.3 (tối đa 3)");
+  else if(v.a3_uutien.includes("a3_khac") && !v.a3_uutien_khac) e[1].push("Câu 1.3 (ghi rõ mục Khác)");
+  // B (tab2)
+  if(!v.b1_kynang_can) e[2].push("Câu 2.1");
+  if(B2_ROWS.some(([c])=>v[c]==null)) e[2].push("Ma trận 2.2 (chấm đủ 9 dòng)");
+  if(matrixOtherError(v,"b2")) e[2].push("Dòng \"Khác\" ở 2.2 (điền nội dung thì phải chấm điểm)");
+  // C (tab3)
+  if(C1_ROWS.some(([c])=>v[c]==null)) e[3].push("Ma trận 3.1 (chấm đủ 8 dòng)");
+  if(matrixOtherError(v,"c1")) e[3].push("Dòng \"Khác\" ở 3.1 (điền nội dung thì phải chấm điểm)");
+  if(!v.c2_dang_lam) e[3].push("Câu 3.2");
+  if(!v.c3_raocan.length) e[3].push("Câu 3.3 (chọn ít nhất 1)");
+  else if(v.c3_raocan.length>3) e[3].push("Câu 3.3 (tối đa 3)");
+  else if(v.c3_raocan.includes("c3_khac") && !v.c3_raocan_khac) e[3].push("Câu 3.3 (ghi rõ mục Khác)");
+  // D (tab4)
+  if(!v.d1_diem_yeu) e[4].push("Câu 4.1");
+  if(!v.d2_hotro.length) e[4].push("Câu 4.2 (chọn ít nhất 1)");
+  else if(v.d2_hotro.includes("d2_khac") && !v.d2_hotro_khac) e[4].push("Câu 4.2 (ghi rõ mục Khác)");
+  if(!v.d3_kyvong) e[4].push("Câu 4.3");
+  // 4.4 optional — không kiểm
+  return e;
+}
+/* Dòng "Khác" matrix: điền text mà chưa chấm điểm (hoặc ngược lại) = lỗi. Bỏ trống cả 2 = OK. */
+function matrixOtherError(v,id){
+  for(let i=1;i<=MATRIX_OTHER_MAX;i++){
+    const t=v[`${id}_other_${i}_text`], s=v[`${id}_other_${i}_score`];
+    if((t && s==null) || (!t && s!=null)) return true;
+  }
+  return false;
+}
+
+function refreshTabStatus(){
+  const e = validate(collect());
+  document.querySelectorAll('.tab').forEach((t,idx)=>{
+    t.classList.remove('done','invalid');
+    if(idx>=REVIEW_TAB) return;
+    if(e[idx] && e[idx].length===0) t.classList.add('done');
+  });
+  const done = [0,1,2,3,4].filter(i=>e[i].length===0).length;
+  document.getElementById('progbar').style.width = (done/5*100)+'%';
+}
+
+/* ---------- review render ---------- */
+function renderReview(){
+  const v = collect();
+  const rows = [];
+  const codeText = (opts,arr)=> arr.map(c=>(opts.find(o=>o[0]===c)||[c,c])[1]).join(", ");
+  const orgText = ()=>{ if(!v.org_unit) return ""; const o=(ORG_UNITS.find(x=>x[0]===v.org_unit)||["",""])[1];
+    return v.org_unit==="other" ? `Khác: ${v.org_unit_other||"(chưa ghi rõ)"}` : o; };
+  const matrixText = (rows,id)=>{
+    const parts = rows.filter(([c])=>v[c]).map(([c,t])=>`${t}: ${v[c]}`);
+    for(let i=1;i<=MATRIX_OTHER_MAX;i++){ const t=v[`${id}_other_${i}_text`], s=v[`${id}_other_${i}_score`];
+      if(t) parts.push(`Khác (${t}): ${s||"?"}`); }
+    return parts.join(" · ");
+  };
+  const pushRow=(k,val)=>rows.push(`<div class="rrow"><div class="rk">${k}</div><div class="rv ${val?'':'empty'}">${val||"(chưa trả lời)"}</div></div>`);
+  pushRow("Biệt danh",v.nickname);
+  pushRow("Chức danh",v.job_title);
+  pushRow("Đơn vị",orgText());
+  pushRow("Số năm gắn bó",(YEAR_OPTS.find(o=>o[0]===v.years_at_company)||["",""])[1]);
+  pushRow("Dự buổi 09/04",v.attended_intro_0904);
+  pushRow("1.1 Mục tiêu TCIT",v.a1_muctieu);
+  pushRow("1.2 ESG giúp gì",v.a2_esg_giup);
+  pushRow("1.3 Ưu tiên",codeText(A3_OPTS,v.a3_uutien)+(v.a3_uutien_khac?` (Khác: ${v.a3_uutien_khac})`:''));
+  pushRow("2.1 Kiến thức/kỹ năng cần",v.b1_kynang_can);
+  pushRow("2.2 Mức quan trọng năng lực",matrixText(B2_ROWS,"b2"));
+  pushRow("3.1 Mức hiểu biết hiện tại",matrixText(C1_ROWS,"c1"));
+  pushRow("3.2 Đang làm gì",v.c2_dang_lam);
+  pushRow("3.3 Rào cản",codeText(C3_OPTS,v.c3_raocan)+(v.c3_raocan_khac?` (Khác: ${v.c3_raocan_khac})`:''));
+  pushRow("4.1 Điểm yếu so với cảng khác",v.d1_diem_yeu);
+  pushRow("4.2 Cần hỗ trợ",codeText(D2_OPTS,v.d2_hotro)+(v.d2_hotro_khac?` (Khác: ${v.d2_hotro_khac})`:''));
+  pushRow("4.3 Kỳ vọng",v.d3_kyvong);
+  pushRow("4.4 Chia sẻ thêm",v.d4_chia_se);
+  document.getElementById('reviewlist').innerHTML = rows.join('');
+
+  const e = validate(v);
+  const missTabs = [0,1,2,3,4].filter(i=>e[i].length);
+  const box = document.getElementById('missbox');
+  if(missTabs.length){
+    box.classList.add('show');
+    box.innerHTML = "Còn một vài mục bắt buộc cần hoàn thành ở: " +
+      missTabs.map(i=>`<a data-go="${i}">${TABS[i].label}</a> (${e[i].join(', ')})`).join(" · ");
+  } else box.classList.remove('show');
+}
+
+/* ============================================================
+   SUBMIT
+   ============================================================ */
+async function submit(){
+  if(hasSubmitted) return;
+  const v = collect();
+  const e = validate(v);
+  const missTabs = [0,1,2,3,4].filter(i=>e[i].length);
+  document.querySelectorAll('.tab').forEach((t,idx)=>{ if(missTabs.includes(idx)) t.classList.add('invalid'); });
+  if(missTabs.length){ renderReview(); toast("Vui lòng hoàn thành các mục bắt buộc còn thiếu."); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = "Đang gửi...";
+
+  // flat payload (multi -> CSV)
+  const payload = {...v};
+  payload.a3_uutien = v.a3_uutien.join(",");
+  payload.c3_raocan = v.c3_raocan.join(",");
+  payload.d2_hotro  = v.d2_hotro.join(",");
+  delete payload.website;
+
+  if(!CONFIG.SCRIPT_URL){
+    console.log("[DEMO] payload sẽ gửi:", payload);
+    finishOK();
+    return;
+  }
+  try{
+    const res = await fetch(CONFIG.SCRIPT_URL,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify({action:"submit",token:CONFIG.TOKEN,sessionId:getSession(),website:v.website,payload})
+    });
+    const j = await res.json();
+    if(j.ok) finishOK();
+    else { toast("Có lỗi khi gửi: "+(j.error||"không gửi được")); btn.disabled=false; btn.textContent="Gửi phản hồi"; }
+  }catch(err){
+    toast("Chưa kết nối được máy chủ, anh/chị thử lại sau giúp nhé."); btn.disabled=false; btn.textContent="Gửi phản hồi";
+  }
+}
+function finishOK(){
+  hasSubmitted = true;
+  localStorage.removeItem(CONFIG.DRAFT_KEY);
+  document.getElementById('reviewlist').style.display='none';
+  document.querySelector('#tab-rev .pnav')?.remove();
+  document.querySelector('.panel[data-tab="tab-rev"] .card:first-child').style.display='none';
+  document.getElementById('thanks').classList.add('show');
+  scrollToPanelTop();
+}
+
+/* ============================================================
+   DRAFT (localStorage autosave)
+   ============================================================ */
+function getSession(){
+  let s=localStorage.getItem('tna_v3_session'); if(!s){s=crypto.randomUUID();localStorage.setItem('tna_v3_session',s);} return s;
+}
+function saveDraft(){
+  if(hasSubmitted) return;
+  const f=document.getElementById('form'); const d={};
+  f.querySelectorAll('input,textarea,select').forEach(x=>{
+    if(x.type==='radio'||x.type==='checkbox'){ if(x.checked) (d[x.name]=d[x.name]||[]).push(x.value); }
+    else if(x.name||x.id) d[x.name||x.id]=x.value;
+  });
+  localStorage.setItem(CONFIG.DRAFT_KEY, JSON.stringify(d));
+}
+function loadDraft(){
+  const raw=localStorage.getItem(CONFIG.DRAFT_KEY); if(!raw) return;
+  let d; try{d=JSON.parse(raw)}catch{return;}
+  const f=document.getElementById('form');
+  // tái tạo trước các dòng "Khác" động của matrix (nếu bản nháp có dòng 2,3)
+  ["b2","c1"].forEach(id=>{
+    for(let i=2;i<=MATRIX_OTHER_MAX;i++){
+      const hasData = (d[`${id}_other_${i-1}_text`]||"").trim() && d[`${id}_other_${i-1}_score`];
+      if(hasData) addOtherRow(id);
+    }
+  });
+  const setVal=(k,val)=>{
+    if(Array.isArray(val)){ val.forEach(vv=>{ const x=f.querySelector(`input[name="${k}"][value="${CSS.escape(vv)}"]`); if(x){x.checked=true;} }); }
+    else {
+      const rad=f.querySelector(`input[name="${k}"][value="${CSS.escape(val)}"]`);
+      if(rad && rad.type==='radio'){ rad.checked=true; return; }
+      const e=f.elements[k]; if(e && e.type!=='radio' && e.type!=='checkbox'){ e.value=val; }
+    }
+  };
+  Object.entries(d).forEach(([k,val])=>setVal(k,val));
+  f.querySelectorAll('input[type=checkbox]:checked,input[type=radio]:checked').forEach(syncOptUI);
+  f.querySelectorAll('select[data-other-target]').forEach(syncSelectOther);
+  f.querySelectorAll('textarea').forEach(updateCounter);
+  toast("Đã khôi phục bản nháp điền dở trước đó.");
+}
+
+/* ============================================================
+   UI behaviours
+   ============================================================ */
+function updateCounter(t){ const c=document.querySelector(`[data-count="${t.id}"]`); if(c)c.textContent=t.value.length; }
+function syncOptUI(input){
+  const opt = input.closest('.opt'); if(opt) opt.classList.toggle('sel', input.checked);
+  if(input.value && input.closest('.q')){
+    const q=input.closest('.q'); const ob=q.querySelector('.otherbox');
+    const khacChecked = q.querySelector('input[value$="_khac"]:checked');
+    if(ob) ob.classList.toggle('show', !!khacChecked);
+  }
+}
+function syncSelectOther(sel){
+  const target=document.getElementById(sel.dataset.otherTarget);
+  if(!target) return;
+  const show = sel.value==="other";
+  target.style.display = show ? "block" : "none";
+  if(!show) target.value="";
+}
+function enforceMax(q){
+  const max=+q.dataset.max; if(!max) return;
+  const boxes=[...q.querySelectorAll('input[type=checkbox]')];
+  const checked=boxes.filter(b=>b.checked).length;
+  boxes.forEach(b=>{ const dis = !b.checked && checked>=max; b.disabled=dis; b.closest('.opt').classList.toggle('disabled',dis); });
+}
+/* Tạo dòng "Khác" kế tiếp khi dòng cuối đã có ĐỦ text + điểm (học bản v2). Tối đa MATRIX_OTHER_MAX. */
+function addOtherRow(id){
+  const f=document.getElementById('form');
+  const rows=[...f.querySelectorAll(`tr.otherrow[data-otherrow="${id}"]`)];
+  const last=rows[rows.length-1]; if(!last) return;
+  const i=+last.dataset.oidx; if(i>=MATRIX_OTHER_MAX) return;
+  const txt=last.querySelector('input.othertext').value.trim();
+  const score=last.querySelector('input[type=radio]:checked');
+  if(txt && score){
+    const scale = id==='b2' ? B2_SCALE : C1_SCALE;
+    const tr=document.createElement('tr');
+    tr.className='otherrow'; tr.dataset.otherrow=id; tr.dataset.oidx=i+1;
+    tr.innerHTML=otherRowHTML(id,i+1,scale);
+    last.after(tr);
+  }
+}
+
+/* ============================================================
+   WIRE UP
+   ============================================================ */
+function init(){
+  buildPanels(); buildTabs(); go(0);
+  const f=document.getElementById('form');
+
+  f.addEventListener('input', e=>{
+    const t=e.target;
+    if(t.tagName==='TEXTAREA') updateCounter(t);
+    if(t.classList && t.classList.contains('othertext')){
+      const wrap=t.closest('[data-matrix]'); if(wrap) addOtherRow(wrap.dataset.otherId);
+    }
+    saveDraft(); refreshTabStatus();
+    if(active===REVIEW_TAB) renderReview();
+  });
+  f.addEventListener('change', e=>{
+    const t=e.target;
+    if(t.tagName==='SELECT' && t.dataset.otherTarget) syncSelectOther(t);
+    if(t.type==='checkbox'||t.type==='radio'){ syncOptUI(t); const q=t.closest('.q'); if(q&&q.dataset.max!=null) enforceMax(q); }
+    // chấm điểm dòng "Khác" của matrix cũng có thể mở dòng kế
+    if(t.type==='radio' && t.closest('tr.otherrow')){ addOtherRow(t.closest('tr.otherrow').dataset.otherrow); }
+    saveDraft(); refreshTabStatus();
+    if(active===REVIEW_TAB) renderReview();
+  });
+
+  document.addEventListener('click', e=>{
+    const g=e.target.closest('[data-go]'); if(g){ go(+g.dataset.go); }
+    if(e.target.id==='submitBtn') submit();
+  });
+
+  loadDraft(); refreshTabStatus();
+}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2800); }
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
