@@ -861,31 +861,27 @@ function loadDraft(){
     }
   };
   Object.entries(d).forEach(([k,val])=>setVal(k,val));
-  // Khôi phục dòng "Khác" động của matrix: tạo dòng + set data tuần tự, rồi mọc
-  // thêm 1 dòng trống nếu dòng cuối đã đầy (luật: luôn +1 dòng khi dòng cuối đầy, max 3)
-  ["b2","c1"].forEach(id=>restoreMatrixOther(f,d,id));
+  // Dòng "Khác" matrix: đổ data dòng đang có, rồi để addOtherRow tự mọc dòng kế
+  // (cùng quy tắc lúc chạy thường). Lặp tới khi không mọc thêm.
+  ["b2","c1"].forEach(id=>{
+    for(let i=1;i<=MATRIX_OTHER_MAX;i++){
+      fillOtherRow(f,d,id,i);   // đổ text+điểm vào dòng i nếu draft có
+      addOtherRow(id);          // dòng i đầy & chưa max -> tự mọc dòng i+1
+    }
+  });
   f.querySelectorAll('input[type=checkbox]:checked,input[type=radio]:checked').forEach(syncOptUI);
   f.querySelectorAll('select[data-other-target]').forEach(syncSelectOther);
   f.querySelectorAll('textarea').forEach(updateCounter);
   toast("Đã khôi phục bản nháp điền dở trước đó.");
 }
-/* Dựng lại dòng "Khác" matrix từ draft: dòng 1 luôn có sẵn; với dòng 2,3 nếu draft
-   có data thì addOtherRow tạo DOM rồi set text+điểm; cuối cùng mọc 1 dòng trống nếu cần. */
-function restoreMatrixOther(f,d,id){
-  for(let i=1;i<=MATRIX_OTHER_MAX;i++){
-    const t=(d[`${id}_other_${i}_text`]||"").trim();
-    const sArr=d[`${id}_other_${i}_score`];
-    const s=Array.isArray(sArr)?sArr[0]:sArr;   // score radio lưu dạng mảng trong draft
-    if(!t && !s) continue;
-    // đảm bảo dòng i tồn tại (dòng 1 có sẵn; dòng >1 phải addOtherRow từ dòng trước)
-    let tr=f.querySelector(`tr.otherrow[data-otherrow="${id}"][data-oidx="${i}"]`);
-    if(!tr){ addOtherRow(id); tr=f.querySelector(`tr.otherrow[data-otherrow="${id}"][data-oidx="${i}"]`); }
-    if(!tr) break;
-    const txt=tr.querySelector('input.othertext'); if(txt && t) txt.value=t;
-    if(s){ const rad=tr.querySelector(`input[type=radio][value="${CSS.escape(String(s))}"]`); if(rad) rad.checked=true; }
-  }
-  // sau khi khôi phục, nếu dòng cuối đã đầy thì mọc thêm dòng trống kế
-  addOtherRow(id);
+/* Đổ text+điểm từ draft vào dòng "Khác" thứ i (nếu dòng đó đang tồn tại & draft có data) */
+function fillOtherRow(f,d,id,i){
+  const tr=f.querySelector(`tr.otherrow[data-otherrow="${id}"][data-oidx="${i}"]`);
+  if(!tr) return;
+  const t=(d[`${id}_other_${i}_text`]||"").trim();
+  const sArr=d[`${id}_other_${i}_score`], s=Array.isArray(sArr)?sArr[0]:sArr; // score lưu dạng mảng trong draft
+  const txt=tr.querySelector('input.othertext'); if(txt && t) txt.value=t;
+  if(s){ const rad=tr.querySelector(`input[type=radio][value="${CSS.escape(String(s))}"]`); if(rad) rad.checked=true; }
 }
 
 /* ============================================================
