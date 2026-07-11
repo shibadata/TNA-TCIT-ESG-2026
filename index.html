@@ -283,7 +283,7 @@ const A3_OPTS = [
 ];
 const C3_OPTS = [
   ["c3_chua_hieu_esg","Chưa hiểu rõ ESG là gì và liên quan gì đến công việc"],
-  ["c3_thieu_congcu","Không có công cụ / hệ thống để thu thập dữ liệu"],
+  ["c3_thieu_congcu","Không có công cụ/hệ thống để thu thập dữ liệu"],
   ["c3_khong_ro_trachnhiem","Không rõ ai chịu trách nhiệm về ESG trong bộ phận"],
   ["c3_qua_ban","Quá bận với công việc vận hành hằng ngày"],
   ["c3_chua_co_kpi","Chưa có KPI hoặc mục tiêu ESG rõ ràng"],
@@ -295,10 +295,10 @@ const D2_OPTS = [
   ["d2_daotao_coban","Đào tạo kiến thức ESG cơ bản cho nhân viên"],
   ["d2_huongdan_thu_data","Hướng dẫn cách thu thập dữ liệu ESG cụ thể"],
   ["d2_xaydung_kpi","Xây dựng KPI ESG riêng cho bộ phận"],
-  ["d2_congcu_bieumau","Công cụ / biểu mẫu đơn giản để ghi chép dữ liệu"],
+  ["d2_congcu_bieumau","Công cụ/biểu mẫu đơn giản để ghi chép dữ liệu"],
   ["d2_raci","Phân công rõ ràng ai làm gì (RACI)"],
   ["d2_workshop_casestudy","Workshop thực hành với case study ngành cảng"],
-  ["d2_cam_ket_lanhdao","Hỗ trợ từ lãnh đạo / cam kết của Ban điều hành"],
+  ["d2_cam_ket_lanhdao","Hỗ trợ từ lãnh đạo/cam kết của Ban điều hành"],
   ["d2_khac","Khác"]
 ];
 const B2_ROWS = [
@@ -448,7 +448,7 @@ function buildPanels(){
     ${textQ("nickname","Anh/chị muốn được gọi là gì?",false,false,{
       hint:"Một biệt danh dễ nhớ do anh/chị tự đặt, dùng lại chính biệt danh này nếu sau đó muốn gửi bổ sung ý kiến.",
       placeholder:"Ví dụ: Anh Hòa Kỹ thuật, Chị Lan CSKH..."})}
-    ${textQ("job_title","Chức danh / Vị trí công việc",true,false,{placeholder:""})}
+    ${textQ("job_title","Chức danh/Vị trí công việc",true,false,{placeholder:""})}
     ${selectQ("org_unit","Đơn vị công tác",true,ORG_UNITS,"org_unit_other")}
     ${plainSelectQ("years_at_company","Số năm làm việc tại TCIT",true,YEAR_OPTS)}
     ${singleQ("attended_intro_0904","Anh/chị đã tham dự buổi giới thiệu, chia sẻ ESG ngày 09/04 chưa?",true,["Có","Không"])}
@@ -465,7 +465,7 @@ function buildPanels(){
       hint:"Nêu những kết quả cụ thể mà TCIT cần đạt: về vận hành, khách hàng, hay vị thế cạnh tranh.",
       eg:"Tăng năng suất khai thác; giữ chân hãng tàu Premier Alliance; giảm chi phí nhiên liệu."})}
     ${textQ("a2_esg_giup","1.2 — Trong các mục tiêu đó, ESG có thể hỗ trợ ở những điểm nào?",true,true,{
-      hint:"Không cần dùng thuật ngữ ESG. Buổi 09/04 có nhắc cách nghĩ: ESG = Chi phí ↓ / Hiệu quả ↑ / Rủi ro ↓; có thể liên hệ với thực tế đơn vị.",
+      hint:"Không cần dùng thuật ngữ ESG. Buổi 09/04 có nhắc cách nghĩ: ESG = Chi phí ↓/Hiệu quả ↑/Rủi ro ↓; có thể liên hệ với thực tế đơn vị.",
       eg:"ESG giúp giảm thời gian thiết bị chạy không tải, nhờ đó vừa giảm chi phí nhiên liệu vừa giảm phát thải."})}
     ${multiQ("a3_uutien","1.3 — Những hướng nào nên được ưu tiên để tạo giá trị sớm nhất?",true,A3_OPTS,3)}
     ${pnav(1)}
@@ -676,7 +676,7 @@ function collect(){
 function validate(v){
   const e = {0:[],1:[],2:[],3:[],4:[]};
   // info (tab 0)
-  if(!v.job_title) e[0].push("Chức danh / Vị trí");
+  if(!v.job_title) e[0].push("Chức danh/Vị trí");
   if(!v.org_unit) e[0].push("Phòng ban");
   else if(v.org_unit==="other" && !v.org_unit_other) e[0].push("Còn thiếu nội dung cho mục đơn vị khác");
   if(!v.years_at_company) e[0].push("Số năm gắn bó");
