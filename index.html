@@ -678,7 +678,7 @@ function validate(v){
   // info (tab 0)
   if(!v.job_title) e[0].push("Chức danh / Vị trí");
   if(!v.org_unit) e[0].push("Phòng ban");
-  else if(v.org_unit==="other" && !v.org_unit_other) e[0].push("Ghi rõ phòng ban khác");
+  else if(v.org_unit==="other" && !v.org_unit_other) e[0].push("Còn thiếu nội dung cho mục đơn vị khác");
   if(!v.years_at_company) e[0].push("Số năm gắn bó");
   if(!v.attended_intro_0904) e[0].push("Tham dự buổi 09/04");
   // A (tab1)
@@ -686,22 +686,22 @@ function validate(v){
   if(!v.a2_esg_giup) e[1].push("Câu 1.2");
   if(!v.a3_uutien.length) e[1].push("Câu 1.3 (chọn ít nhất 1)");
   else if(v.a3_uutien.length>3) e[1].push("Câu 1.3 (tối đa 3)");
-  else if(v.a3_uutien.includes("a3_khac") && !v.a3_uutien_khac) e[1].push("Câu 1.3 (ghi rõ mục Khác)");
+  else if(v.a3_uutien.includes("a3_khac") && !v.a3_uutien_khac) e[1].push("Còn thiếu nội dung cho mục khác ở câu 1.3");
   // B (tab2)
   if(!v.b1_kynang_can) e[2].push("Câu 2.1");
-  if(B2_ROWS.some(([c])=>v[c]==null)) e[2].push("Ma trận 2.2 (chấm đủ 9 dòng)");
-  if(matrixOtherError(v,"b2")) e[2].push("Dòng \"Khác\" ở 2.2 (điền nội dung thì phải chấm điểm)");
+  if(B2_ROWS.some(([c])=>v[c]==null)) e[2].push("Ma trận 2.2 chưa chấm đủ 9 dòng");
+  matrixOtherMsgs(v,"b2").forEach(m=>e[2].push(m));
   // C (tab3)
-  if(C1_ROWS.some(([c])=>v[c]==null)) e[3].push("Ma trận 3.1 (chấm đủ 8 dòng)");
-  if(matrixOtherError(v,"c1")) e[3].push("Dòng \"Khác\" ở 3.1 (điền nội dung thì phải chấm điểm)");
+  if(C1_ROWS.some(([c])=>v[c]==null)) e[3].push("Ma trận 3.1 chưa chấm đủ 8 dòng");
+  matrixOtherMsgs(v,"c1").forEach(m=>e[3].push(m));
   if(!v.c2_dang_lam) e[3].push("Câu 3.2");
   if(!v.c3_raocan.length) e[3].push("Câu 3.3 (chọn ít nhất 1)");
   else if(v.c3_raocan.length>3) e[3].push("Câu 3.3 (tối đa 3)");
-  else if(v.c3_raocan.includes("c3_khac") && !v.c3_raocan_khac) e[3].push("Câu 3.3 (ghi rõ mục Khác)");
+  else if(v.c3_raocan.includes("c3_khac") && !v.c3_raocan_khac) e[3].push("Còn thiếu nội dung cho mục khác ở câu 3.3");
   // D (tab4)
   if(!v.d1_diem_yeu) e[4].push("Câu 4.1");
   if(!v.d2_hotro.length) e[4].push("Câu 4.2 (chọn ít nhất 1)");
-  else if(v.d2_hotro.includes("d2_khac") && !v.d2_hotro_khac) e[4].push("Câu 4.2 (ghi rõ mục Khác)");
+  else if(v.d2_hotro.includes("d2_khac") && !v.d2_hotro_khac) e[4].push("Còn thiếu nội dung cho mục khác ở câu 4.2");
   if(!v.d3_kyvong) e[4].push("Câu 4.3");
   // 4.4 optional — không kiểm
   return e;
@@ -720,14 +720,17 @@ const MISSING_QIDS = {
     if(!v.d2_hotro.length||(v.d2_hotro.includes('d2_khac')&&!v.d2_hotro_khac))m.push('d2_hotro');
     if(!v.d3_kyvong)m.push('d3_kyvong');return m;}
 };
-/* Dòng "Khác" matrix: điền text mà chưa chấm điểm (hoặc ngược lại) = lỗi. Bỏ trống cả 2 = OK. */
-function matrixOtherError(v,id){
+/* Dòng "Khác" matrix: báo đúng cái thiếu. Có text chưa chấm -> thiếu điểm; có điểm chưa text -> thiếu nội dung. Trống cả 2 = OK. */
+function matrixOtherMsgs(v,id){
+  const msgs=[];
   for(let i=1;i<=MATRIX_OTHER_MAX;i++){
     const t=v[`${id}_other_${i}_text`], s=v[`${id}_other_${i}_score`];
-    if((t && s==null) || (!t && s!=null)) return true;
+    if(t && s==null) msgs.push('Còn thiếu điểm cho nội dung khác');
+    else if(!t && s!=null) msgs.push('Còn thiếu nội dung cho mục khác');
   }
-  return false;
+  return [...new Set(msgs)]; // gộp trùng nếu nhiều dòng cùng lỗi
 }
+function matrixOtherError(v,id){ return matrixOtherMsgs(v,id).length>0; }
 
 function refreshTabStatus(){
   const e = validate(collect());
