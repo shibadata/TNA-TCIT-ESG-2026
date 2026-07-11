@@ -137,8 +137,15 @@
   table.matrix .celllab{display:none}   /* desktop: chỉ hiện ô tròn */
   /* dòng "Khác" tự nhập trong matrix */
   table.matrix tr.otherrow th{padding:6px 8px}
-  table.matrix tr.otherrow input.othertext{width:100%;min-width:170px;font-size:.85rem;padding:8px 10px}
+  table.matrix tr.otherrow input.othertext{width:100%;min-width:150px;font-size:.85rem;padding:8px 10px}
   table.matrix tr.otherrow th{background:#fbfdfd}
+  .otherrow-in{display:flex;align-items:center;gap:6px}
+  .otherdel{flex:0 0 auto;width:26px;height:26px;border:1px solid var(--line);border-radius:6px;
+    background:#fff;color:var(--muted);font-size:1.05rem;line-height:1;cursor:pointer;transition:.12s;
+    display:inline-flex;align-items:center;justify-content:center;padding:0}
+  .otherdel:hover{border-color:var(--err);color:var(--err);background:var(--err-l)}
+  /* dòng trống duy nhất chưa gõ gì thì ẩn nút xóa (không có gì để xóa) */
+  tr.otherrow.rowempty .otherdel{visibility:hidden}
 
   /* ===== Matrix dạng card dọc trên mobile ===== */
   @media(max-width:640px){
@@ -414,8 +421,8 @@ function scoreCells(name,scale){
 }
 /* Một dòng "Khác": text + 5 ô điểm. Tạo động khi dòng trước đã đủ text+điểm (task 5). */
 function otherRowHTML(id,i,scale){
-  return `<th><input type="text" class="othertext" name="${id}_other_${i}_text" maxlength="200"
-    placeholder="Xin vui lòng ghi rõ thêm nội dung khác (nếu có)"></th>${scoreCells(`${id}_other_${i}_score`,scale)}`;
+  return `<th><div class="otherrow-in"><input type="text" class="othertext" name="${id}_other_${i}_text" maxlength="200"
+    placeholder="Xin vui lòng ghi rõ thêm nội dung khác (nếu có)"><button type="button" class="otherdel" data-delrow="${id}" title="Xóa dòng này" aria-label="Xóa dòng này">×</button></div></th>${scoreCells(`${id}_other_${i}_score`,scale)}`;
 }
 /* Matrix likert + tối đa 3 dòng "Khác" tự nhập (task 5) */
 function matrixQ(id,label,rows,scale,egHtml){
@@ -924,6 +931,43 @@ function addOtherRow(id){
     tr.innerHTML=otherRowHTML(id,i+1,scale);
     last.after(tr);
   }
+  markEmptyOtherRows(id);
+}
+/* Xóa 1 dòng "Khác", dồn số thứ tự, đảm bảo vẫn còn 1 dòng trống cuối */
+function delOtherRow(tr){
+  const id=tr.dataset.otherrow;
+  const f=document.getElementById('form');
+  const rows=[...f.querySelectorAll(`tr.otherrow[data-otherrow="${id}"]`)];
+  if(rows.length<=1){ // chỉ còn 1 dòng: không xóa, chỉ dọn trống
+    tr.querySelector('input.othertext').value='';
+    const r=tr.querySelector('input[type=radio]:checked'); if(r) r.checked=false;
+  } else {
+    tr.remove();
+  }
+  reindexOtherRows(id);
+  addOtherRow(id);            // dòng cuối đầy & <max thì mọc lại dòng trống
+  saveDraft(); refreshTabStatus(); clearPanelErrorIfFixed();
+}
+/* Đánh lại oidx + name/id các input theo thứ tự DOM, giữ value */
+function reindexOtherRows(id){
+  const f=document.getElementById('form');
+  [...f.querySelectorAll(`tr.otherrow[data-otherrow="${id}"]`)].forEach((tr,idx)=>{
+    const i=idx+1; tr.dataset.oidx=i;
+    const txt=tr.querySelector('input.othertext'); if(txt) txt.name=`${id}_other_${i}_text`;
+    tr.querySelectorAll('input[type=radio]').forEach(r=>{ r.name=`${id}_other_${i}_score`; });
+  });
+  markEmptyOtherRows(id);
+}
+/* Đánh dấu dòng trống (chưa gõ text & chưa chấm) để ẩn nút xóa nếu là dòng trống duy nhất */
+function markEmptyOtherRows(id){
+  const f=document.getElementById('form');
+  const rows=[...f.querySelectorAll(`tr.otherrow[data-otherrow="${id}"]`)];
+  rows.forEach(tr=>{
+    const t=tr.querySelector('input.othertext').value.trim();
+    const s=tr.querySelector('input[type=radio]:checked');
+    // ẩn nút xóa chỉ khi: dòng trống HOÀN TOÀN và là dòng duy nhất
+    tr.classList.toggle('rowempty', !t && !s && rows.length===1);
+  });
 }
 
 /* ============================================================
@@ -937,7 +981,7 @@ function init(){
     const t=e.target;
     if(t.tagName==='TEXTAREA') updateCounter(t);
     if(t.classList && t.classList.contains('othertext')){
-      const wrap=t.closest('[data-matrix]'); if(wrap) addOtherRow(wrap.dataset.otherId);
+      const wrap=t.closest('[data-matrix]'); if(wrap){ addOtherRow(wrap.dataset.otherId); markEmptyOtherRows(wrap.dataset.otherId); }
     }
     saveDraft(); refreshTabStatus(); clearPanelErrorIfFixed();
     if(active===REVIEW_TAB) renderReview();
@@ -947,12 +991,13 @@ function init(){
     if(t.tagName==='SELECT' && t.dataset.otherTarget) syncSelectOther(t);
     if(t.type==='checkbox'||t.type==='radio'){ syncOptUI(t); const q=t.closest('.q'); if(q&&q.dataset.max!=null) enforceMax(q); }
     // chấm điểm dòng "Khác" của matrix cũng có thể mở dòng kế
-    if(t.type==='radio' && t.closest('tr.otherrow')){ addOtherRow(t.closest('tr.otherrow').dataset.otherrow); }
+    if(t.type==='radio' && t.closest('tr.otherrow')){ const oid=t.closest('tr.otherrow').dataset.otherrow; addOtherRow(oid); markEmptyOtherRows(oid); }
     saveDraft(); refreshTabStatus(); clearPanelErrorIfFixed();
     if(active===REVIEW_TAB) renderReview();
   });
 
   document.addEventListener('click', e=>{
+    const del=e.target.closest('[data-delrow]'); if(del){ delOtherRow(del.closest('tr.otherrow')); return; }
     const n=e.target.closest('[data-next]'); if(n){ tryNext(+n.dataset.next); return; }
     const g=e.target.closest('[data-go]'); if(g){ requestGo(+g.dataset.go); return; }
     if(e.target.id==='submitBtn') submit();
