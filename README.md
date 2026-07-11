@@ -2,6 +2,8 @@
 
 Biểu mẫu khảo sát nhu cầu đào tạo (Training Needs Analysis) cho dự án tư vấn ESG tại TCIT. Trang tĩnh, chạy trực tiếp trên GitHub Pages; dữ liệu gửi về Google Sheet qua Apps Script.
 
+> Bắt đầu làm việc trên repo này? Đọc **[HANDOFF.md](HANDOFF.md)** trước — nó chứa toàn bộ context: đối tượng, thiết kế form, trạng thái, việc còn lại, cách sửa.
+
 ## Link công khai
 
 - Form: https://shibadata.github.io/TNA-TCIT-ESG-2026/
