@@ -852,13 +852,6 @@ function loadDraft(){
   const raw=localStorage.getItem(CONFIG.DRAFT_KEY); if(!raw) return;
   let d; try{d=JSON.parse(raw)}catch{return;}
   const f=document.getElementById('form');
-  // tái tạo trước các dòng "Khác" động của matrix (nếu bản nháp có dòng 2,3)
-  ["b2","c1"].forEach(id=>{
-    for(let i=2;i<=MATRIX_OTHER_MAX;i++){
-      const hasData = (d[`${id}_other_${i-1}_text`]||"").trim() && d[`${id}_other_${i-1}_score`];
-      if(hasData) addOtherRow(id);
-    }
-  });
   const setVal=(k,val)=>{
     if(Array.isArray(val)){ val.forEach(vv=>{ const x=f.querySelector(`input[name="${k}"][value="${CSS.escape(vv)}"]`); if(x){x.checked=true;} }); }
     else {
@@ -868,10 +861,31 @@ function loadDraft(){
     }
   };
   Object.entries(d).forEach(([k,val])=>setVal(k,val));
+  // Khôi phục dòng "Khác" động của matrix: tạo dòng + set data tuần tự, rồi mọc
+  // thêm 1 dòng trống nếu dòng cuối đã đầy (luật: luôn +1 dòng khi dòng cuối đầy, max 3)
+  ["b2","c1"].forEach(id=>restoreMatrixOther(f,d,id));
   f.querySelectorAll('input[type=checkbox]:checked,input[type=radio]:checked').forEach(syncOptUI);
   f.querySelectorAll('select[data-other-target]').forEach(syncSelectOther);
   f.querySelectorAll('textarea').forEach(updateCounter);
   toast("Đã khôi phục bản nháp điền dở trước đó.");
+}
+/* Dựng lại dòng "Khác" matrix từ draft: dòng 1 luôn có sẵn; với dòng 2,3 nếu draft
+   có data thì addOtherRow tạo DOM rồi set text+điểm; cuối cùng mọc 1 dòng trống nếu cần. */
+function restoreMatrixOther(f,d,id){
+  for(let i=1;i<=MATRIX_OTHER_MAX;i++){
+    const t=(d[`${id}_other_${i}_text`]||"").trim();
+    const sArr=d[`${id}_other_${i}_score`];
+    const s=Array.isArray(sArr)?sArr[0]:sArr;   // score radio lưu dạng mảng trong draft
+    if(!t && !s) continue;
+    // đảm bảo dòng i tồn tại (dòng 1 có sẵn; dòng >1 phải addOtherRow từ dòng trước)
+    let tr=f.querySelector(`tr.otherrow[data-otherrow="${id}"][data-oidx="${i}"]`);
+    if(!tr){ addOtherRow(id); tr=f.querySelector(`tr.otherrow[data-otherrow="${id}"][data-oidx="${i}"]`); }
+    if(!tr) break;
+    const txt=tr.querySelector('input.othertext'); if(txt && t) txt.value=t;
+    if(s){ const rad=tr.querySelector(`input[type=radio][value="${CSS.escape(String(s))}"]`); if(rad) rad.checked=true; }
+  }
+  // sau khi khôi phục, nếu dòng cuối đã đầy thì mọc thêm dòng trống kế
+  addOtherRow(id);
 }
 
 /* ============================================================
