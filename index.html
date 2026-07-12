@@ -225,17 +225,17 @@
   </header>
 
   <div class="proj">
-    <b>Vài mốc chính của dự án</b>
+    <b>Các cột mốc chính của dự án</b>
     <ul>
-      <li>Buổi giới thiệu &amp; chia sẻ ESG: 09/04/2026</li>
+      <li>Buổi giới thiệu và chia sẻ ESG: 09/04/2026</li>
       <li>Mong nhận phản hồi trước: 16/07/2026</li>
       <li>Thời gian đồng hành: 20/07 – 30/10/2026</li>
-      <li>Trọng tâm: năng lực &amp; nhận thức ESG nội bộ</li>
+      <li>Trọng tâm: năng lực và nhận thức ESG nội bộ</li>
     </ul>
   </div>
 
   <div class="official">
-    <b>Cam kết bảo mật.</b> Phản hồi được bảo mật theo thỏa thuận bảo mật (NDA) của dự án. Mọi dữ liệu thuộc quyền sở hữu của người trả lời và chỉ phục vụ mục đích thiết kế buổi workshop phù hợp và hữu ích nhất. Chúng tôi cam kết không chia sẻ dữ liệu thô dưới bất kỳ hình thức nào với bất kỳ ai, dữ liệu trong mọi bản chia sẻ, phân tích đều ở dạng tổng hợp ẩn danh. Vì thế chúng tôi mong nhận được những đóng góp thẳng thắn, chân thành, sát với thực tế nhất, đây chính là thông tin cực kỳ quý giá đối với sự thành công chung của dự án.
+    <b>Cam kết bảo mật.</b> Phản hồi được bảo mật theo thỏa thuận bảo mật (NDA) của dự án. Dữ liệu phản hồi thuộc quyền sở hữu của người cung cấp phản hồi; nhóm tư vấn chỉ được quyền sử dụng trong phạm vi phục vụ dự án. Chúng tôi cam kết không chia sẻ dữ liệu thô dưới bất kỳ hình thức nào với bất kỳ ai, dữ liệu trong mọi bản chia sẻ, phân tích đều ở dạng tổng hợp ẩn danh (khử thông tin nhận diện người trả lời). Vì thế chúng tôi mong nhận được những đóng góp thẳng thắn, chân thành, sát với thực tế nhất, đây chính là thông tin cực kỳ quý giá đối với sự thành công chung của dự án.
   </div>
   </div><!-- /#intro -->
 
@@ -450,7 +450,7 @@ function buildPanels(){
   // INFO
   const info = el('div','panel'); info.dataset.tab='tab-info';
   info.innerHTML = `<div class="card">
-    <h2>Đôi nét về người trả lời</h2>
+    <h2>Thông tin chung về người trả lời</h2>
     <div class="sub">Giúp đội dự án đọc các ý kiến theo đúng vị trí và đơn vị công tác; không dùng để đánh giá cá nhân.</div>
     ${textQ("nickname","Anh/chị muốn được gọi là gì?",false,false,{
       hint:"Một biệt danh dễ nhớ do anh/chị tự đặt, dùng lại chính biệt danh này nếu sau đó muốn gửi bổ sung ý kiến.",
@@ -532,7 +532,7 @@ function buildPanels(){
     <h2>Xem kỹ trước khi gửi</h2>
     <div class="sub">Vui lòng kiểm tra lại một lượt các câu trả lời bên dưới trước khi gửi.</div>
     <div class="resubmit-note">
-      <b>Nếu sau này muốn bổ sung, cập nhật hay thay đổi ý kiến:</b> chỉ cần điền và gửi lại một bản mới với <b>cùng biệt danh</b> đã ghi ở mục "Anh/chị muốn được gọi là gì?". Đội dự án sẽ nhận ra đây là bản cập nhật cùng một người, không cần mã số hay thao tác gì thêm.
+      <b>Nếu sau này muốn bổ sung, cập nhật hay thay đổi ý kiến:</b> chỉ cần điền và gửi lại một bản mới với <b>cùng biệt danh</b> đã điền ở mục "Anh/chị muốn được gọi là gì?", nếu có nhiều phản hồi, hệ thống sẽ ghi nhận theo phản hồi lần cuối.
     </div>
     <div class="miss" id="missbox"></div>
     <div class="rev" id="reviewlist"></div>
