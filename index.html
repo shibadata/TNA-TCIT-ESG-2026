@@ -692,6 +692,7 @@ function validate(v){
   if(!v.a1_muctieu) e[1].push("Câu 1.1");
   if(!v.a2_esg_giup) e[1].push("Câu 1.2");
   if(!v.a3_uutien.length) e[1].push("Câu 1.3 chưa chọn mục nào");
+  else if(v.a3_uutien.length>3) e[1].push("Câu 1.3 chỉ được chọn tối đa 3 mục");
   if(v.a3_uutien.includes("a3_khac") && !v.a3_uutien_khac) e[1].push("Còn thiếu nội dung cho mục khác ở câu 1.3");
   // B (tab2)
   if(!v.b1_kynang_can) e[2].push("Câu 2.1");
@@ -702,6 +703,7 @@ function validate(v){
   matrixOtherMsgs(v,"c1").forEach(m=>e[3].push(m));
   if(!v.c2_dang_lam) e[3].push("Câu 3.2");
   if(!v.c3_raocan.length) e[3].push("Câu 3.3 chưa chọn mục nào");
+  else if(v.c3_raocan.length>3) e[3].push("Câu 3.3 chỉ được chọn tối đa 3 mục");
   if(v.c3_raocan.includes("c3_khac") && !v.c3_raocan_khac) e[3].push("Còn thiếu nội dung cho mục khác ở câu 3.3");
   // D (tab4)
   if(!v.d1_diem_yeu) e[4].push("Câu 4.1");
@@ -877,6 +879,7 @@ function loadDraft(){
     }
   });
   f.querySelectorAll('input[type=checkbox]:checked,input[type=radio]:checked').forEach(syncOptUI);
+  f.querySelectorAll('.q[data-max]').forEach(enforceMax);
   f.querySelectorAll('select[data-other-target]').forEach(syncSelectOther);
   f.querySelectorAll('textarea').forEach(updateCounter);
   toast("Đã khôi phục bản nháp điền dở trước đó.");
