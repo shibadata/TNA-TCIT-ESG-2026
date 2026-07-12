@@ -497,11 +497,11 @@ function buildPanels(){
   const c = el('div','panel'); c.dataset.tab='tab-c';
   c.innerHTML = `<div class="card">
     <h2>Phần C · Điểm xuất phát hiện tại</h2>
-    <div class="partaim">Không có đáp án đúng hay sai, và không có mức nào là "đáng lẽ phải biết". Phần này chỉ giúp đội dự án thiết kế nội dung cho vừa sức và nhận diện phần cần hỗ trợ; kết quả <b>không dùng để chấm điểm cá nhân hay đơn vị</b>, chỉ được tổng hợp ẩn danh.</div>
+    <div class="partaim">Để kết quả phản ánh đúng nhu cầu thực tế, mong anh/chị chia sẻ thẳng thắn theo trải nghiệm và quan sát của mình. Không có câu trả lời đúng hoặc sai. Dữ liệu khảo sát không được sử dụng để đánh giá cá nhân, đánh giá đơn vị, xử lý trách nhiệm hoặc làm căn cứ cho các quyết định về nhân sự.</div>
     ${matrixQ("c1",`3.1 — Mức độ quen thuộc <b>hiện tại</b> của anh/chị với mỗi nội dung sau?`,C1_ROWS,C1_SCALE,
-      "Nếu có nội dung muốn tự đánh giá thêm mà danh sách chưa có, ghi ở dòng \"Khác\" và chọn mức phù hợp. Tối đa 3 dòng.")}
+      "Trường hợp nội dung cần chấm điểm chưa có trong danh sách trên thì có thể ghi bổ sung ở dòng \"Khác\" và chọn mức phù hợp. Tối đa 3 nội dung khác.")}
     ${textQ("c2_dang_lam","3.2 — Hiện đơn vị đang làm gì có liên quan đến ESG (dù chưa gọi tên là ESG)?",true,true,{
-      hint:"Nhiều việc làm hằng ngày thực ra đã là ESG, chỉ chưa được gọi tên hay đo lường. Những việc đang làm tốt cũng rất đáng ghi nhận.",
+      hint:"Nhiều việc làm hằng ngày thực ra đã là ESG, chỉ chưa được gọi tên hay đo lường. Những việc đang làm tốt rất đáng ghi nhận.",
       eg:"Theo dõi tiêu hao nhiên liệu; kiểm tra an toàn hằng ngày; ghi nhận giờ chạy thiết bị; phân loại chất thải."})}
     ${multiQ("c3_raocan","3.3 — Điều gì đang khiến việc triển khai ESG ở đơn vị khó hơn?",true,C3_OPTS,3)}
     ${pnav(3)}
@@ -512,8 +512,8 @@ function buildPanels(){
   const d = el('div','panel'); d.dataset.tab='tab-d';
   d.innerHTML = `<div class="card">
     <h2>Phần D · Cùng thiết kế cách làm phù hợp</h2>
-    <div class="partaim">Phần này là nơi đơn vị <b>đặt hàng cho dự án</b>: nên hỗ trợ gì, và mong thấy điều gì khi dự án kết thúc. Ý kiến ở đây sẽ được dùng để chọn nội dung thảo luận và các bước tiếp theo.</div>
-    ${textQ("d1_diem_yeu","4.1 — Theo anh/chị, TCIT cần củng cố điểm nào để đi nhanh và vững hơn về ESG?",true,true,{
+    <div class="partaim">Phần này là nơi đơn vị <b>đặt hàng cho dự án</b>: nên hỗ trợ gì, và mong thấy điều gì khi dự án kết thúc. Ý kiến ở đây sẽ được dùng để chọn lọc nội dung thảo luận và các bước tiếp theo.</div>
+    ${textQ("d1_diem_yeu","4.1 — Theo anh/chị, TCIT cần củng cố điểm nào để đi nhanh và vững hơn trên con đường ESG?",true,true,{
       hint:"Có thể là quy trình, dữ liệu, phối hợp, nguồn lực hay cách ra quyết định. Buổi 09/04 có nhắc 3 khoảng trống: thương hiệu xanh, năng lượng, và dữ liệu.",
       eg:"Dữ liệu còn rời rạc, chưa có đầu mối tổng hợp; Cần có quy trình vận hành thực tế;..."})}
     ${multiQ("d2_hotro","4.2 — Để thu hẹp khoảng trống đó, đơn vị muốn nhận những hỗ trợ nào?",true,D2_OPTS,0)}
@@ -521,7 +521,7 @@ function buildPanels(){
       hint:"Ghi ngắn gọn 1–2 câu về thay đổi thấy/đo được khi dự án hoàn thành.",
       eg:"TCIT có bộ KPI ESG rõ ràng và biết mình đang ở đâu so với chuẩn quốc tế."})}
     ${textQ("d4_chia_se","4.4 — Còn điều gì anh/chị muốn chia sẻ, gửi gắm hay lưu ý thêm với đội dự án không?",false,true,{
-      hint:"Không bắt buộc, có thể chia sẻ bất kỳ lo lắng, băn khoăn lẫn góp ý thẳng thắn tại đây."})}
+      hint:"Không bắt buộc, có thể chia sẻ bất kỳ lo lắng, băn khoăn lẫn góp ý thẳng khác tại đây."})}
     ${pnav(4)}
   </div>`;
   P.appendChild(d);
@@ -532,7 +532,7 @@ function buildPanels(){
     <h2>Xem kỹ trước khi gửi</h2>
     <div class="sub">Vui lòng kiểm tra lại một lượt các câu trả lời bên dưới trước khi gửi.</div>
     <div class="resubmit-note">
-      <b>Nếu sau này muốn bổ sung, cập nhật hay thay đổi ý kiến:</b> chỉ cần điền và gửi lại một bản mới với <b>cùng biệt danh</b> đã điền ở mục "Anh/chị muốn được gọi là gì?", nếu có nhiều phản hồi, hệ thống sẽ ghi nhận theo phản hồi lần cuối.
+      <b>Trong trường hợp muốn bổ sung hoặc thay đổi ý kiến:</b> anh/chị chỉ cần điền và gửi lại một bản mới với <b>cùng biệt danh</b> đã điền ở mục "Anh/chị muốn được gọi là gì?", hệ thống sẽ tự động ghi nhận theo phản hồi lần cuối.
     </div>
     <div class="miss" id="missbox"></div>
     <div class="rev" id="reviewlist"></div>
@@ -545,7 +545,6 @@ function buildPanels(){
     <div class="ic">✓</div>
     <h2>Cảm ơn anh/chị đã dành thời gian chia sẻ</h2>
     <p>Mọi ý kiến đã được ghi nhận và sẽ trực tiếp góp phần định hình chương trình ESG sắp tới của TCIT. Đội dự án thật sự trân trọng thời gian và sự thẳng thắn của anh/chị.</p>
-    <p>Nếu cần bổ sung, cập nhật hay thay đổi ý kiến, chỉ cần gửi lại một bản mới với <b>cùng biệt danh</b> đã dùng lần này — đội dự án sẽ nhận ra đó là bản cập nhật cùng một người.</p>
   </div>`;
   P.appendChild(r);
 }
