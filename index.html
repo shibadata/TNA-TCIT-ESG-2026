@@ -228,7 +228,7 @@
     <b>Các cột mốc chính của dự án</b>
     <ul>
       <li>Buổi giới thiệu và chia sẻ ESG: 09/04/2026</li>
-      <li>Phản hồi trước: <b>17:00 16/07/2026<b></li>
+      <li>Phản hồi trước: <b>17:00 16/07/2026</b>b></li>
       <li>Thời gian đồng hành: 20/07 – 30/10/2026</li>
       <li>Trọng tâm: năng lực và nhận thức ESG nội bộ</li>
     </ul>
@@ -336,7 +336,7 @@ const YEAR_OPTS = [
   ["10_15","10 – 15 năm"],["tren_15","Trên 15 năm"]
 ];
 const B2_SCALE = ["Rất thấp","Thấp","Trung bình","Cao","Rất cao"];
-const C1_SCALE = ["Chưa biết gì","Nghe qua","Hiểu cơ bản","Hiểu rõ","Hướng dẫn được"];
+const C1_SCALE = ["Chưa biết gì","Từng nghe qua","Hiểu cơ bản","Hiểu rõ","Hướng dẫn người khác được"];
 const MATRIX_OTHER_MAX = 3;
 
 /* ============================================================
@@ -458,7 +458,7 @@ function buildPanels(){
     ${textQ("job_title","Chức danh công việc",true,false,{placeholder:""})}
     ${selectQ("org_unit","Đơn vị công tác",true,ORG_UNITS,"org_unit_other")}
     ${plainSelectQ("years_at_company","Số năm làm việc tại TCIT",true,YEAR_OPTS)}
-    ${singleQ("attended_intro_0904","Anh/chị đã tham dự buổi giới thiệu, chia sẻ ESG ngày 09/04 chưa?",true,["Có","Không"])}
+    ${singleQ("attended_intro_0904","Anh/chị đã tham dự buổi giới thiệu, chia sẻ về ESG ngày 09/04/2026 chưa?",true,["Có","Không"])}
     ${pnav(0)}
   </div>`;
   P.appendChild(info);
@@ -466,14 +466,14 @@ function buildPanels(){
   // A
   const a = el('div','panel'); a.dataset.tab='tab-a';
   a.innerHTML = `<div class="card">
-    <h2>Phần A · Điều TCIT cần đạt</h2>
+    <h2>Phần A · Mục tiêu của TCIT</h2>
     <div class="partaim">Phần này cùng nhìn về <b>đích đến</b>: ESG chỉ có ý nghĩa khi phục vụ những mục tiêu mà đơn vị thấy quan trọng cho TCIT. Ý kiến ở đây giúp chương trình bám sát ưu tiên thực tế, thay vì lý thuyết chung.</div>
     ${textQ("a1_muctieu","1.1 — Trong 12–24 tháng tới, đâu là 3 mục tiêu quan trọng nhất của TCIT?",true,true,{
       hint:"Nêu những kết quả cụ thể mà TCIT cần đạt: về vận hành, khách hàng, hay vị thế cạnh tranh.",
       eg:"Tăng năng suất khai thác; giữ chân hãng tàu Premier Alliance; giảm chi phí nhiên liệu."})}
     ${textQ("a2_esg_giup","1.2 — Trong các mục tiêu đó, ESG có thể hỗ trợ ở những điểm nào?",true,true,{
-      hint:"Không cần dùng thuật ngữ ESG. Buổi 09/04 có nhắc cách nghĩ: ESG = Chi phí ↓/Hiệu quả ↑/Rủi ro ↓; có thể liên hệ với thực tế đơn vị.",
-      eg:"ESG giúp giảm thời gian thiết bị chạy không tải, nhờ đó vừa giảm chi phí nhiên liệu vừa giảm phát thải."})}
+      hint:"Không cần dùng thuật ngữ ESG mà có thể liên hệ đến ESG theo ba hướng: giảm chi phí, nâng cao hiệu quả và giảm rủi ro.",
+      eg:"ESG giúp giảm thời gian thiết bị chạy không tải để giảm phát thải và nhờ đó luôn giảm chi phí nhiên liệu."})}
     ${multiQ("a3_uutien","1.3 — Những hướng nào nên được ưu tiên để tạo giá trị sớm nhất?",true,A3_OPTS,3)}
     ${pnav(1)}
   </div>`;
@@ -482,7 +482,7 @@ function buildPanels(){
   // B
   const b = el('div','panel'); b.dataset.tab='tab-b';
   b.innerHTML = `<div class="card">
-    <h2>Phần B · Điều đơn vị cần hiểu để cùng làm được</h2>
+    <h2>Phần B · Nhu cầu về kiến thức và năng lực triển khai</h2>
     <div class="partaim">Phần này giúp đội dự án chọn đúng nội dung và mức độ đi sâu, tránh dàn trải hay lặp lại điều đã rõ. Mức đánh giá phản ánh <b>nhu cầu của đơn vị</b>, không phản ánh năng lực cá nhân.</div>
     ${textQ("b1_kynang_can","2.1 — Để triển khai ESG hiệu quả hơn, đơn vị cần thêm kiến thức hay kỹ năng gì?",true,true,{
       hint:"Nêu những điều nếu được làm rõ sẽ giúp công việc hằng ngày dễ hơn.",
@@ -828,7 +828,7 @@ async function submit(){
     if(j.ok) finishOK();
     else { toast("Có lỗi khi gửi: "+(j.error||"không gửi được")); btn.disabled=false; btn.textContent="Gửi phản hồi"; }
   }catch(err){
-    toast("Chưa kết nối được máy chủ, anh/chị thử lại sau giúp nhé."); btn.disabled=false; btn.textContent="Gửi phản hồi";
+    toast("Chưa kết nối được máy chủ, xin vui lòng thử gửi lại sau 30 giây."); btn.disabled=false; btn.textContent="Gửi phản hồi";
   }
 }
 function finishOK(){
