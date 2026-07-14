@@ -69,7 +69,7 @@ function validate(p) {
   if (!ORG_UNITS.includes(p.org_unit)) return 'bad_org_unit';
   if (p.org_unit === 'other' && !nonEmpty(p.org_unit_other)) return 'missing_org_unit_other';
   if (!YEAR_VALID.includes(p.years_at_company)) return 'bad_years_at_company';
-  if (p.attended_intro_0904 !== 'Có' && p.attended_intro_0904 !== 'Không') return 'bad_attended_intro_0904';
+  if (p.attended_intro_0904 !== 'Có' && p.attended_intro_0904 !== 'Chưa') return 'bad_attended_intro_0904';
 
   // matrix cố định: mỗi dòng ∈ 1..5
   for (const c of B2_ROWS.concat(C1_ROWS)) if (!inRange(p[c])) return 'bad_matrix_' + c;
