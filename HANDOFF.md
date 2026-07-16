@@ -42,7 +42,7 @@ Cấu trúc tab: Thông tin · A Điều cần đạt · B Điều cần biết 
 - **Matrix likert (2.2 và 3.1):** các dòng cố định bắt buộc chấm đủ. Mỗi matrix có dòng "Khác" tự nhập: gõ nội dung + chấm điểm xong một dòng thì tự mọc dòng kế (tạo động bằng DOM), tối đa 3 dòng. Dòng Khác optional; nhưng nếu có text thì phải có điểm và ngược lại (validate hai đầu FE + Apps Script).
 - **Mỗi phần A/B/C/D** có một khối mô tả mục tiêu phần đó gắn với người trả lời (`.partaim`). Nhiều câu text có ví dụ minh họa ngay dưới ô nhập (`.eg`), ví dụ neo vào bối cảnh TCIT thật.
 - **Hero + khối mốc dự án + callout NDA** chỉ hiện ở tab đầu; ẩn khi sang tab khác (`#intro.intro-hidden`). Callout bảo mật KHÔNG sticky.
-- Autosave nháp vào localStorage; khôi phục khi mở lại. Honeypot chống bot. Rate-limit theo session ở Apps Script.
+- Autosave nháp vào localStorage; khôi phục khi mở lại. (Đã gỡ toàn bộ chặn spam: không còn honeypot, token hay rate-limit — server nhận mọi request hợp lệ về dữ liệu.)
 
 ## Trạng thái hiện tại
 
@@ -53,9 +53,9 @@ Cấu trúc tab: Thông tin · A Điều cần đạt · B Điều cần biết 
 
 Nối form vào Sheet — làm theo `apps-script/SETUP.md`:
 1. Mở Sheet đích, tab `Raw`, dán `header-row-raw.txt` vào A1.
-2. Trong chính Sheet đó: Extensions → Apps Script (bound script), dán `Code.gs`, đổi `SECRET`.
+2. Trong chính Sheet đó: Extensions → Apps Script (bound script), dán `Code.gs`.
 3. Deploy → Web app (Execute as: Me · Access: Anyone) → copy Web App URL.
-4. Trong `index.html` khối `CONFIG`: điền `SCRIPT_URL` = URL vừa copy, `TOKEN` = đúng `SECRET`. Commit → Pages tự cập nhật.
+4. Trong `index.html` khối `CONFIG`: điền `SCRIPT_URL` = URL vừa copy. Commit → Pages tự cập nhật.
 5. Điền thử một bản, kiểm tab `Raw` có dòng mới đúng cột.
 
 ## Cách sửa và triển khai

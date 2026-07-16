@@ -12,9 +12,7 @@ Sheet đích: ID `1jefHIO8hfWoN5l_3OhMSS525_AOgRukuVpVfw7xdTc4`. Apps Script v3 
 1. Mở Google Sheet đích (theo SHEET_ID trên). Đổi tên tab đầu thành `Raw` (hoặc tạo tab mới tên `Raw`).
 2. Mở `header-row-raw-tna-survey3.txt`, copy cả dòng, click ô **A1** của tab Raw, dán. 50 cột tự rải ra A1:AX1.
 3. Trong **chính Sheet đó**: **Extensions → Apps Script** (BẮT BUỘC mở từ đây – bound script – để quyền chỉ giới hạn đúng Sheet này). Xóa code mẫu, dán toàn bộ `Code-tna-survey3.gs`.
-4. Sửa trong `Code-tna-survey3.gs`:
-   - `SECRET` = đặt 1 chuỗi bí mật bất kỳ (vd `tna-tcit-v3-x7k2`).
-   - (Không còn SHEET_ID – bound script tự ghi vào Sheet chứa nó.)
+4. (Không còn SHEET_ID – bound script tự ghi vào Sheet chứa nó. Không cần cấu hình gì thêm trong `.gs`.)
 5. **Deploy → New deployment → Web app**:
    - Execute as: **Me**
    - Who has access: **Anyone**
@@ -23,7 +21,6 @@ Sheet đích: ID `1jefHIO8hfWoN5l_3OhMSS525_AOgRukuVpVfw7xdTc4`. Apps Script v3 
    ```js
    const CONFIG = {
      SCRIPT_URL: "<dán Web app URL bước 5>",
-     TOKEN: "<chuỗi SECRET bước 4, khớp y hệt>",
      DRAFT_KEY: "tna_esg_tcit_v3_draft"
    };
    ```
@@ -53,9 +50,6 @@ FE gửi `POST <SCRIPT_URL>`, `Content-Type: text/plain;charset=utf-8` (cố ý 
 ```
 {
   "action": "submit",
-  "token":  "<SECRET>",
-  "sessionId": "<uuid FE sinh, dùng rate-limit>",
-  "website": "",                                (honeypot, phải rỗng)
   "payload": {
     "nickname": "...",                           (không bắt buộc)
     "job_title": "...",                          (bắt buộc)
@@ -80,4 +74,5 @@ FE gửi `POST <SCRIPT_URL>`, `Content-Type: text/plain;charset=utf-8` (cố ý 
 }
 ```
 Server trả: `{ "ok": true }` hoặc `{ "ok": false, "error": "<mã lỗi>" }`.
-Mã lỗi: `unauthorized` · `rejected` · `rate_limited` · `missing_*` / `bad_*` / `too_long_*` · `bad_request` · `server_error`.
+Mã lỗi: `missing_*` / `bad_*` / `too_long_*` · `bad_request` · `server_error`.
+(Không còn token / honeypot / rate-limit — đã gỡ toàn bộ các lớp chặn spam.)

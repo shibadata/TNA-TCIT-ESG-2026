@@ -205,7 +205,6 @@
   .thanks h2{color:var(--main-d);margin-bottom:8px}
   .thanks p{color:var(--muted);max-width:52ch;margin:0 auto 8px;font-size:.92rem}
 
-  .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);
     background:var(--ink);color:#fff;padding:12px 20px;border-radius:10px;font-size:.9rem;
     opacity:0;transition:.3s;z-index:50}
@@ -246,8 +245,6 @@
   </div>
 
   <form id="form" autocomplete="off">
-    <!-- honeypot -->
-    <div class="hp"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
     <div id="panels"></div>
   </form>
 
@@ -261,7 +258,6 @@
    ============================================================ */
 const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzxvZx1j1druUrT0UAmJFrP8N9P7E9r7-h3C3yZG_45erjpRAXU73Lx-uubVFjVvDutbA/exec",
-  TOKEN: "shiba-tna-tcit-2026-form",    // khớp SECRET trong apps-script/Code.gs
   DRAFT_KEY: "tna_esg_tcit_v3_draft"
 };
 
@@ -675,7 +671,6 @@ function collect(){
       v[`${id}_other_${i}_score`] = s ? +s.value : null;
     }
   });
-  v.website = f.elements["website"].value; // honeypot
   return v;
 }
 
@@ -812,7 +807,6 @@ async function submit(){
   payload.a3_uutien = v.a3_uutien.join(",");
   payload.c3_raocan = v.c3_raocan.join(",");
   payload.d2_hotro  = v.d2_hotro.join(",");
-  delete payload.website;
 
   if(!CONFIG.SCRIPT_URL){
     console.log("[DEMO] payload sẽ gửi:", payload);
@@ -823,7 +817,7 @@ async function submit(){
     const res = await fetch(CONFIG.SCRIPT_URL,{
       method:"POST",
       headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body: JSON.stringify({action:"submit",token:CONFIG.TOKEN,sessionId:getSession(),website:v.website,payload})
+      body: JSON.stringify({action:"submit",payload})
     });
     const j = await res.json();
     if(j.ok) finishOK();
@@ -845,9 +839,6 @@ function finishOK(){
 /* ============================================================
    DRAFT (localStorage autosave)
    ============================================================ */
-function getSession(){
-  let s=localStorage.getItem('tna_v3_session'); if(!s){s=crypto.randomUUID();localStorage.setItem('tna_v3_session',s);} return s;
-}
 function saveDraft(){
   if(hasSubmitted) return;
   const f=document.getElementById('form'); const d={};

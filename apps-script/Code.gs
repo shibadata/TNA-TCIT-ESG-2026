@@ -7,17 +7,15 @@
  *  2. Dán header-row-raw-tna-survey3.txt vào ô A1 của tab Raw.
  *  3. NGAY TRONG Sheet đó: Extensions -> Apps Script (BẮT BUỘC mở từ đây để là
  *     bound script -> quyền chỉ giới hạn đúng Sheet này). Dán file này.
- *  4. Đổi SECRET (khớp CONFIG.TOKEN trong tna-survey3.html).
- *  5. Deploy -> New deployment -> Web app (Execute as: Me · Access: Anyone).
+ *  4. Deploy -> New deployment -> Web app (Execute as: Me · Access: Anyone).
  *     Copy Web App URL -> dán vào CONFIG.SCRIPT_URL trong tna-survey3.html.
- *  6. Sửa code về sau: Deploy -> Manage deployments -> Edit (giữ nguyên URL).
+ *  5. Sửa code về sau: Deploy -> Manage deployments -> Edit (giữ nguyên URL).
  *
  * LƯU Ý: bound script (getActiveSpreadsheet) chỉ xin quyền hẹp
  * (spreadsheets.currentonly) đúng Sheet này, không phải tất cả Google Sheets.
  * Vì thế KHÔNG dùng openById. Script phải bound trong đúng Sheet đích.
  */
 
-const SECRET   = 'shiba-tna-tcit-2026-form';   // phải khớp CONFIG.TOKEN trong HTML
 const TAB_NAME = 'Raw';
 
 const TEXT_MAX  = 2000;   // textbox dài
@@ -47,10 +45,6 @@ function doPost(e) {
     if (!e || !e.postData || e.postData.contents.length > MAX_BODY) return out(false, 'bad_request');
     const data = JSON.parse(e.postData.contents);
     if (data.action !== 'submit') return out(false, 'bad_action');
-    if (data.token !== SECRET)    return out(false, 'unauthorized');
-    if (data.website)             return out(false, 'rejected');            // honeypot
-    const sid = str(data.sessionId).slice(0, 64);
-    if (sid && isRateLimited(sid)) return out(false, 'rate_limited');
     const p = data.payload || {};
     const err = validate(p);
     if (err) return out(false, err);
@@ -119,7 +113,6 @@ function writeRow(p) {
   } finally { lock.releaseLock(); }
 }
 
-function isRateLimited(sid) { const c = CacheService.getScriptCache(), k = 'tna_v3_' + sid, n = +c.get(k) || 0; if (n >= 5) return true; c.put(k, String(n + 1), 600); return false; }
 function nonEmpty(v) { return str(v).trim().length > 0; }
 function str(v) { return v == null ? '' : String(v); }
 function inRange(v) { const n = +v; return Number.isInteger(n) && n >= 1 && n <= 5; }
