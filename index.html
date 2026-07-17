@@ -210,13 +210,15 @@
     opacity:0;transition:.3s;z-index:50}
   .toast.show{transform:translateX(-50%);opacity:1}
 
-  .backup{margin-top:22px;padding:16px;border:1px dashed #b9c2d6;border-radius:12px;background:var(--main-l)}
-  .backup-hd{font-weight:700;color:var(--main-d);margin-bottom:4px}
-  .backup-sub{color:var(--muted);font-size:.9rem;margin-bottom:12px}
+  .btn.sm{padding:7px 14px;font-size:.82rem;font-weight:500}
+  .rev-sep{border-top:2px dashed var(--line);margin-top:28px}
+  .backup{margin-top:20px;padding:18px 16px;border:1px solid #e0ad4d;border-radius:12px;background:#fff8e8}
+  .backup-hd{font-weight:700;color:#8a5a06;margin-bottom:4px}
+  .backup-sub{color:#7a5a2a;font-size:.9rem;margin-bottom:12px}
   .backup-ta{width:100%;margin:10px 0;font-size:.82rem;line-height:1.5;
-    font-family:ui-monospace,Menlo,Consolas,monospace;padding:10px;border:1px solid #cfd6e4;
+    font-family:ui-monospace,Menlo,Consolas,monospace;padding:10px;border:1px solid #e0cfa0;
     border-radius:8px;resize:vertical;box-sizing:border-box;background:#fff;color:var(--ink)}
-  .backup-frame{width:100%;height:640px;max-width:100%;border:1px solid #cfd6e4;border-radius:8px;background:#fff}
+  .backup-frame{width:100%;height:640px;max-width:100%;border:1px solid #e0cfa0;border-radius:8px;background:#fff}
 </style>
 </head>
 <body>
@@ -536,20 +538,22 @@ function buildPanels(){
   const r = el('div','panel'); r.dataset.tab='tab-rev';
   r.innerHTML = `<div class="card">
     <h2>Xem kỹ trước khi gửi</h2>
-    <div class="sub">Vui lòng kiểm tra lại một lượt các câu trả lời bên dưới trước khi gửi.</div>
+    <div class="sub">Kiểm tra lại câu trả lời trước khi gửi.</div>
     <div class="resubmit-note">
       Trong trường hợp không thể gửi do bị chặn, xin nhờ anh/chị <b>bấm nút “📋 Copy tất cả câu trả lời”</b> ở cuối trang, rồi <b>dán toàn bộ kết quả vào khung Google Form</b> bên dưới và <b>bấm Gửi ngay trong khung đó</b> để hoàn tất.
     </div>
     <div class="miss" id="missbox"></div>
-    <div class="rev" id="reviewlist"></div>
+    <button type="button" class="btn ghost sm" id="toggleReviewBtn">Bấm để xem lại kết quả</button>
+    <div class="rev" id="reviewlist" style="display:none"></div>
     <div class="pnav">
       <button type="button" class="btn ghost" data-go="4">← Quay lại</button>
       <button type="button" class="btn primary" id="submitBtn">Gửi ý kiến</button>
     </div>
+    ${CONFIG.GFORM_EMBED_URL ? '<div class="rev-sep"></div>' : ''}
     <div class="backup" id="backupBox"${CONFIG.GFORM_EMBED_URL ? '' : ' style="display:none"'}>
       <div class="backup-hd">Gửi không được? Dùng cách dự phòng</div>
       <div class="backup-sub">Nếu bấm “Gửi ý kiến” báo lỗi: bấm <b>Copy tất cả</b> bên dưới, rồi dán vào ô Google Form và bấm <b>Gửi</b> ngay trong khung đó.</div>
-      <button type="button" class="btn" id="copyAllBtn">📋 Copy tất cả câu trả lời</button>
+      <button type="button" class="btn primary" id="copyAllBtn">📋 Copy tất cả câu trả lời</button>
       <textarea id="backupText" class="backup-ta" readonly rows="6" onclick="this.select()" aria-label="Nội dung câu trả lời để copy"></textarea>
       <iframe id="gformFrame" class="backup-frame" src="${CONFIG.GFORM_EMBED_URL || ''}" title="Google Form dự phòng" loading="lazy"></iframe>
     </div>
@@ -1025,6 +1029,12 @@ function init(){
     const g=e.target.closest('[data-go]'); if(g){ requestGo(+g.dataset.go); return; }
     if(e.target.id==='submitBtn') submit();
     if(e.target.closest('#copyAllBtn')) copyAll();
+    if(e.target.id==='toggleReviewBtn'){
+      const rl=document.getElementById('reviewlist'), show=rl.style.display==='none';
+      rl.style.display=show?'':'none';
+      e.target.textContent=show?'Ẩn kết quả':'Bấm để xem lại kết quả';
+      return;
+    }
   });
 
   loadDraft(); refreshTabStatus();
