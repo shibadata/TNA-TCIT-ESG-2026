@@ -219,6 +219,11 @@
     font-family:ui-monospace,Menlo,Consolas,monospace;padding:10px;border:1px solid #e0cfa0;
     border-radius:8px;resize:vertical;box-sizing:border-box;background:#fff;color:var(--ink)}
   .backup-frame{width:100%;height:640px;max-width:100%;border:1px solid #e0cfa0;border-radius:8px;background:#fff}
+  .backup-alt{margin-top:16px;padding:14px 16px;border:2px solid #d64545;border-radius:10px;background:#fdeaea}
+  .backup-alt p{margin:0 0 10px;color:#a51f1f;font-size:.92rem;line-height:1.55}
+  .backup-alt a.altlink{display:inline-block;font-weight:700;color:#fff;background:#d64545;
+    text-decoration:none;padding:11px 18px;border-radius:8px;font-size:.95rem}
+  .backup-alt a.altlink:hover{background:#b83232}
 </style>
 </head>
 <body>
@@ -556,6 +561,10 @@ function buildPanels(){
       <button type="button" class="btn primary" id="copyAllBtn">📋 Copy tất cả câu trả lời</button>
       <textarea id="backupText" class="backup-ta" readonly rows="6" onclick="this.select()" aria-label="Nội dung câu trả lời để copy"></textarea>
       <iframe id="gformFrame" class="backup-frame" src="${CONFIG.GFORM_EMBED_URL || ''}" title="Google Form dự phòng" loading="lazy"></iframe>
+      <div class="backup-alt">
+        <p>Trường hợp anh/chị <b>không thấy khung điền form load bên trên</b>, xin vui lòng bấm vào nút bên dưới để mở form riêng (nếu wifi công ty chặn, có thể mở bằng 4G điện thoại):</p>
+        <a class="altlink" href="https://docs.google.com/forms/d/e/1FAIpQLScD5MwBdIrXx-FYvCHs-MPeoMnA3rR_zVaoDM7i5zd5tBH1YQ/viewform?usp=dialog" target="_blank" rel="noopener">➜ Mở Google Form ở tab mới</a>
+      </div>
     </div>
   </div>
   <div class="thanks card" id="thanks">
