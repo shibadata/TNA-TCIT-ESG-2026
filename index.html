@@ -814,16 +814,23 @@ async function submit(){
     return;
   }
   try{
-    const res = await fetch(CONFIG.SCRIPT_URL,{
+    // Gửi kiểu "bắn đi là xong" (no-cors): server Apps Script vẫn nhận và ghi
+    // dòng bình thường, nhưng trình duyệt KHÔNG đọc phản hồi (opaque) nên không
+    // còn phụ thuộc việc đọc JSON cross-origin của Google -> hết lỗi "chưa kết
+    // nối được máy chủ" trên các mạng/điện thoại bị chặn đọc phản hồi.
+    // Đánh đổi: không phát hiện được lỗi validate phía server, nhưng form đã
+    // validate đầy đủ ở client (bước trên) trước khi tới đây rồi.
+    await fetch(CONFIG.SCRIPT_URL,{
       method:"POST",
+      mode:"no-cors",
       headers:{"Content-Type":"text/plain;charset=utf-8"},
       body: JSON.stringify({action:"submit",payload})
     });
-    const j = await res.json();
-    if(j.ok) finishOK();
-    else { toast("Có lỗi khi gửi: "+(j.error||"không gửi được")); btn.disabled=false; btn.textContent="Gửi phản hồi"; }
+    finishOK();
   }catch(err){
-    toast("Chưa kết nối được máy chủ, xin vui lòng thử gửi lại sau 30 giây."); btn.disabled=false; btn.textContent="Gửi phản hồi";
+    // Chỉ rơi vào đây khi request không rời được máy (mất mạng thật). Bản nháp
+    // vẫn được giữ trong localStorage nên gửi lại không mất dữ liệu.
+    toast("Chưa gửi được, vui lòng kiểm tra kết nối mạng rồi thử lại."); btn.disabled=false; btn.textContent="Gửi phản hồi";
   }
 }
 function finishOK(){

@@ -46,7 +46,10 @@ Sheet đích: ID `1jefHIO8hfWoN5l_3OhMSS525_AOgRukuVpVfw7xdTc4`. Apps Script v3 
 
 ## FE-CONTRACT (shape request/response)
 
-FE gửi `POST <SCRIPT_URL>`, `Content-Type: text/plain;charset=utf-8` (cố ý né CORS preflight), body JSON:
+FE gửi `POST <SCRIPT_URL>` ở chế độ `mode:'no-cors'` (bắn đi là xong – KHÔNG đọc
+phản hồi để tránh lỗi đọc JSON cross-origin trên một số mạng/điện thoại). Server
+vẫn ghi dòng bình thường; FE coi như gửi xong trừ khi mất mạng thật.
+`Content-Type: text/plain;charset=utf-8` (giá trị an toàn với no-cors), body JSON:
 ```
 {
   "action": "submit",
