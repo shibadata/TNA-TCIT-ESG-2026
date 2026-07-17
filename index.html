@@ -197,6 +197,9 @@
   .resubmit-note{background:var(--main-l);border:1px solid var(--accent);border-radius:9px;
     padding:12px 14px;margin-bottom:14px;font-size:.85rem;color:var(--main-d);line-height:1.5}
   .resubmit-note b{color:var(--main-d)}
+  .copybox{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+  .copybox .btn{width:100%}
+  .copyhint{margin-top:8px;font-size:.8rem;color:var(--muted);line-height:1.5}
 
   .thanks{text-align:center;padding:40px 20px;display:none}
   .thanks.show{display:block}
@@ -541,6 +544,10 @@ function buildPanels(){
       <button type="button" class="btn ghost" data-go="4">← Quay lại</button>
       <button type="button" class="btn primary" id="submitBtn">Gửi ý kiến</button>
     </div>
+    <div class="copybox">
+      <button type="button" class="btn ghost" id="copyAllBtn">📋 Sao chép toàn bộ câu trả lời</button>
+      <div class="copyhint">Bấm để copy toàn bộ nội dung, sau đó dán vào ô trả lời của Google Form rồi gửi đi.</div>
+    </div>
   </div>
   <div class="thanks card" id="thanks">
     <div class="ic">✓</div>
@@ -750,10 +757,8 @@ function refreshTabStatus(){
   document.getElementById('progbar').style.width = (done/5*100)+'%';
 }
 
-/* ---------- review render ---------- */
-function renderReview(){
-  const v = collect();
-  const rows = [];
+/* ---------- review data (dùng chung cho render + copy) ---------- */
+function reviewPairs(v){
   const codeText = (opts,arr)=> arr.map(c=>(opts.find(o=>o[0]===c)||[c,c])[1]).join(", ");
   const orgText = ()=>{ if(!v.org_unit) return ""; const o=(ORG_UNITS.find(x=>x[0]===v.org_unit)||["",""])[1];
     return v.org_unit==="other" ? `Khác: ${v.org_unit_other||"(chưa ghi rõ)"}` : o; };
@@ -763,24 +768,33 @@ function renderReview(){
       if(t) parts.push(`Khác (${t}): ${s||"?"}`); }
     return parts.join(" · ");
   };
-  const pushRow=(k,val)=>rows.push(`<div class="rrow"><div class="rk">${k}</div><div class="rv ${val?'':'empty'}">${val||"(chưa trả lời)"}</div></div>`);
-  pushRow("Biệt danh",v.nickname);
-  pushRow("Chức danh",v.job_title);
-  pushRow("Đơn vị",orgText());
-  pushRow("Số năm gắn bó",(YEAR_OPTS.find(o=>o[0]===v.years_at_company)||["",""])[1]);
-  pushRow("Dự buổi 09/04",v.attended_intro_0904);
-  pushRow("1.1 Mục tiêu TCIT",v.a1_muctieu);
-  pushRow("1.2 ESG giúp gì",v.a2_esg_giup);
-  pushRow("1.3 Ưu tiên",codeText(A3_OPTS,v.a3_uutien)+(v.a3_uutien_khac?` (Khác: ${v.a3_uutien_khac})`:''));
-  pushRow("2.1 Kiến thức/kỹ năng cần",v.b1_kynang_can);
-  pushRow("2.2 Mức quan trọng năng lực",matrixText(B2_ROWS,"b2"));
-  pushRow("3.1 Mức hiểu biết hiện tại",matrixText(C1_ROWS,"c1"));
-  pushRow("3.2 Đang làm gì",v.c2_dang_lam);
-  pushRow("3.3 Rào cản",codeText(C3_OPTS,v.c3_raocan)+(v.c3_raocan_khac?` (Khác: ${v.c3_raocan_khac})`:''));
-  pushRow("4.1 Điểm yếu so với cảng khác",v.d1_diem_yeu);
-  pushRow("4.2 Cần hỗ trợ",codeText(D2_OPTS,v.d2_hotro)+(v.d2_hotro_khac?` (Khác: ${v.d2_hotro_khac})`:''));
-  pushRow("4.3 Kỳ vọng",v.d3_kyvong);
-  pushRow("4.4 Chia sẻ thêm",v.d4_chia_se);
+  return [
+    ["Biệt danh",v.nickname],
+    ["Chức danh",v.job_title],
+    ["Đơn vị",orgText()],
+    ["Số năm gắn bó",(YEAR_OPTS.find(o=>o[0]===v.years_at_company)||["",""])[1]],
+    ["Dự buổi 09/04",v.attended_intro_0904],
+    ["1.1 Mục tiêu TCIT",v.a1_muctieu],
+    ["1.2 ESG giúp gì",v.a2_esg_giup],
+    ["1.3 Ưu tiên",codeText(A3_OPTS,v.a3_uutien)+(v.a3_uutien_khac?` (Khác: ${v.a3_uutien_khac})`:'')],
+    ["2.1 Kiến thức/kỹ năng cần",v.b1_kynang_can],
+    ["2.2 Mức quan trọng năng lực",matrixText(B2_ROWS,"b2")],
+    ["3.1 Mức hiểu biết hiện tại",matrixText(C1_ROWS,"c1")],
+    ["3.2 Đang làm gì",v.c2_dang_lam],
+    ["3.3 Rào cản",codeText(C3_OPTS,v.c3_raocan)+(v.c3_raocan_khac?` (Khác: ${v.c3_raocan_khac})`:'')],
+    ["4.1 Điểm yếu so với cảng khác",v.d1_diem_yeu],
+    ["4.2 Cần hỗ trợ",codeText(D2_OPTS,v.d2_hotro)+(v.d2_hotro_khac?` (Khác: ${v.d2_hotro_khac})`:'')],
+    ["4.3 Kỳ vọng",v.d3_kyvong],
+    ["4.4 Chia sẻ thêm",v.d4_chia_se],
+  ];
+}
+
+/* ---------- review render ---------- */
+function renderReview(){
+  const v = collect();
+  const esc = s => String(s).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  const rows = reviewPairs(v).map(([k,val])=>
+    `<div class="rrow"><div class="rk">${esc(k)}</div><div class="rv ${val?'':'empty'}">${val?esc(val):"(chưa trả lời)"}</div></div>`);
   document.getElementById('reviewlist').innerHTML = rows.join('');
 
   const e = validate(v);
@@ -791,6 +805,33 @@ function renderReview(){
     box.innerHTML = "Còn một vài mục bắt buộc cần hoàn thành ở: " +
       missTabs.map(i=>`<a data-go="${i}">${TABS[i].label}</a> (${e[i].join(', ')})`).join(" · ");
   } else box.classList.remove('show');
+}
+
+/* ---------- copy all answers (dán vào Google Form) ---------- */
+function buildPlainText(){
+  const v = collect();
+  return reviewPairs(v)
+    .map(([k,val])=>`${k}: ${val || "(chưa trả lời)"}`)
+    .join("\n");
+}
+async function copyAll(){
+  const text = buildPlainText();
+  let ok = false;
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      await navigator.clipboard.writeText(text); ok = true;
+    }
+  }catch(err){ ok = false; }
+  if(!ok){
+    // fallback cho trình duyệt cũ / không có quyền clipboard
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try{ ok = document.execCommand('copy'); }catch(e){ ok = false; }
+    document.body.removeChild(ta);
+  }
+  toast(ok ? "Đã sao chép toàn bộ câu trả lời. Hãy dán vào Google Form."
+           : "Không copy tự động được. Vui lòng chọn và sao chép thủ công.");
 }
 
 /* ============================================================
@@ -1004,6 +1045,7 @@ function init(){
     const n=e.target.closest('[data-next]'); if(n){ tryNext(+n.dataset.next); return; }
     const g=e.target.closest('[data-go]'); if(g){ requestGo(+g.dataset.go); return; }
     if(e.target.id==='submitBtn') submit();
+    if(e.target.closest('#copyAllBtn')) copyAll();
   });
 
   loadDraft(); refreshTabStatus();
