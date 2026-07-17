@@ -751,16 +751,9 @@ const MISSING_QIDS = {
     if(!v.d2_hotro.length||(v.d2_hotro.includes('d2_khac')&&!v.d2_hotro_khac))m.push('d2_hotro');
     if(!v.d3_kyvong)m.push('d3_kyvong');return m;}
 };
-/* Dòng "Khác" matrix: báo đúng cái thiếu. Có text chưa chấm -> thiếu điểm; có điểm chưa text -> thiếu nội dung. Trống cả 2 = OK. */
-function matrixOtherMsgs(v,id){
-  const msgs=[];
-  for(let i=1;i<=MATRIX_OTHER_MAX;i++){
-    const t=v[`${id}_other_${i}_text`], s=v[`${id}_other_${i}_score`];
-    if(t && s==null) msgs.push('Còn thiếu điểm cho nội dung khác');
-    else if(!t && s!=null) msgs.push('Còn thiếu nội dung cho mục khác');
-  }
-  return [...new Set(msgs)]; // gộp trùng nếu nhiều dòng cùng lỗi
-}
+/* Dòng "Khác" matrix: KHÔNG chặn nữa. Cho qua mọi trường hợp (text không điểm,
+   điểm không text) — lọc/làm sạch ở khâu xử lý data. */
+function matrixOtherMsgs(v,id){ return []; }
 function matrixOtherError(v,id){ return matrixOtherMsgs(v,id).length>0; }
 
 function refreshTabStatus(){
