@@ -561,7 +561,7 @@ function buildPanels(){
       <button type="button" class="btn primary" id="copyAllBtn">📋 Copy tất cả câu trả lời</button>
       <textarea id="backupText" class="backup-ta" readonly rows="6" onclick="this.select()" aria-label="Nội dung câu trả lời để copy"></textarea>
       <iframe id="gformFrame" class="backup-frame" src="${CONFIG.GFORM_EMBED_URL || ''}" title="Google Form dự phòng" loading="lazy"></iframe>
-      <div class="backup-alt">
+      <div class="backup-alt" style="display:none"><!-- tạm ẩn theo yêu cầu; xóa style="display:none" ở dòng này để hiện lại -->
         <p>Trường hợp anh/chị <b>không thấy khung điền form load bên trên</b>, xin vui lòng bấm vào nút bên dưới để mở form riêng (nếu wifi công ty chặn, có thể mở bằng 4G điện thoại):</p>
         <a class="altlink" href="https://docs.google.com/forms/d/e/1FAIpQLScD5MwBdIrXx-FYvCHs-MPeoMnA3rR_zVaoDM7i5zd5tBH1YQ/viewform?usp=dialog" target="_blank" rel="noopener">➜ Mở Google Form ở tab mới</a>
       </div>
