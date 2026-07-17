@@ -68,14 +68,11 @@ function validate(p) {
   // matrix cố định: mỗi dòng ∈ 1..5
   for (const c of B2_ROWS.concat(C1_ROWS)) if (!inRange(p[c])) return 'bad_matrix_' + c;
 
-  // dòng "Khác" matrix (tối đa 3 mỗi ma trận): có text thì phải có score và ngược lại
+  // dòng "Khác" matrix (tối đa 3 mỗi ma trận): KHÔNG bắt cặp text/score nữa —
+  // cho qua mọi trường hợp, chỉ chặn text quá dài. (Lọc/làm sạch ở khâu data.)
   for (const prefix of ['b2','c1']) {
     for (let i = 1; i <= 3; i++) {
-      const text  = str(p[prefix + '_other_' + i + '_text']).trim();
-      const score = p[prefix + '_other_' + i + '_score'];
-      const hasScore = score !== '' && score != null;
-      if (text && !inRange(score)) return 'bad_' + prefix + '_other_' + i;
-      if (!text && hasScore)       return 'bad_' + prefix + '_other_' + i;
+      const text = str(p[prefix + '_other_' + i + '_text']).trim();
       if (text.length > SHORT_MAX) return 'too_long_' + prefix + '_other_' + i;
     }
   }

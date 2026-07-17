@@ -64,9 +64,9 @@ vẫn ghi dòng bình thường; FE coi như gửi xong trừ khi mất mạng t
     "a3_uutien": "a3_giam_chiphi,...",           (CSV ≤3)  "a3_uutien_khac": "...",
     "b1_kynang_can": "...",                       (bắt buộc)
     "b2_quydinh": 1..5, ... "b2_dichesg": 1..5,   (9 dòng)
-    "b2_other_1_text": "...", "b2_other_1_score": 1..5,   (tới _3, đều optional; có text thì phải có score)
+    "b2_other_1_text": "...", "b2_other_1_score": 1..5,   (tới _3, đều optional; KHÔNG bắt cặp text↔score — cho qua, lọc ở data)
     "c1_esg_la_gi": 1..5, ... "c1_vithe": 1..5,   (8 dòng)
-    "c1_other_1_text": "...", "c1_other_1_score": 1..5,   (tới _3, optional)
+    "c1_other_1_text": "...", "c1_other_1_score": 1..5,   (tới _3, optional; KHÔNG bắt cặp text↔score)
     "c2_dang_lam": "...",                         (bắt buộc)
     "c3_raocan": "...", "c3_raocan_khac": "...",  (CSV ≤3)
     "d1_diem_yeu": "...",                         (bắt buộc)
