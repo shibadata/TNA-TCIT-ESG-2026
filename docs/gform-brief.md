@@ -105,10 +105,15 @@
 - **Description:** Nêu những điều nếu được làm rõ sẽ giúp công việc hằng ngày dễ hơn. Ví dụ: Hiểu cách tính phát thải Scope 1/Scope 2; biết cách thu thập dữ liệu năng lượng; hiểu KPI ESG liên quan đến đơn vị mình.
 
 ### Câu 2.2 — Mỗi năng lực sau quan trọng đến mức nào với công việc của đơn vị anh/chị tại TCIT? [Bắt buộc]
-- **Loại:** Multiple choice grid (Lưới trắc nghiệm)
-- **Bắt buộc:** bật "Require a response in each row"
-- **Cột (thang 1–5):** 1 Rất thấp / 2 Thấp / 3 Trung bình / 4 Cao / 5 Rất cao
-- **Hàng:**
+- **Loại:** KHÔNG dùng grid. **Tách thành 9 câu Multiple choice riêng biệt**, mỗi câu là 1 năng lực (dễ bấm trên điện thoại). Mỗi câu **[Bắt buộc]**.
+- **Gợi ý trình bày:** đặt 1 dòng tiêu đề phụ (Section title hoặc Title-and-description item) trước 9 câu để nêu ngữ cảnh chung: *"Với mỗi năng lực dưới đây, anh/chị đánh giá mức độ quan trọng với công việc của đơn vị (1 = Rất thấp … 5 = Rất cao)."*
+- **5 lựa chọn dùng chung cho cả 9 câu (đưa nguyên cả nhãn mô tả vào từng option):**
+  - 1 – Rất thấp
+  - 2 – Thấp
+  - 3 – Trung bình
+  - 4 – Cao
+  - 5 – Rất cao
+- **9 câu (tiêu đề mỗi câu = tên năng lực):**
   1. Hiểu biết về quy định quốc tế (EU ETS, IMO 2030/2050)
   2. Kiểm kê khí nhà kính (GHG Scope 1, 2, 3)
   3. Quản lý năng lượng và tối ưu hiệu suất thiết bị
@@ -118,7 +123,7 @@
   7. Thiết lập KPI ESG và hệ thống theo dõi
   8. Phối hợp liên phòng ban về ESG
   9. Biết cách "dịch" ESG sang ngôn ngữ vận hành
-- ⚠️ **Không tái hiện được trong Google Form:** bản gốc cho phép thêm tối đa 3 dòng "Khác" tự nhập (gõ nội dung + chấm điểm, hoàn thành 1 dòng thì mở dòng mới). Grid của Google Form không cho hàng tự nhập. **Giải pháp thay thế:** ngay sau grid, thêm 1 câu Paragraph (không bắt buộc): *"Nếu có năng lực quan trọng mà danh sách chưa nêu, anh/chị ghi thêm tại đây kèm mức điểm 1–5 (tối đa 3 nội dung). Ví dụ: Quản lý nước thải – 4"*.
+- **Dòng "Khác" tự nhập (bản gốc cho tối đa 3):** Google Form không tái hiện được → thêm 1 câu Paragraph (không bắt buộc) sau 9 câu trên: *"Nếu có năng lực quan trọng mà danh sách chưa nêu, anh/chị ghi thêm tại đây kèm mức điểm 1–5 (tối đa 3 nội dung). Ví dụ: Quản lý nước thải – 4"*.
 
 ---
 
@@ -127,9 +132,15 @@
 **Mô tả section:** Để kết quả phản ánh đúng nhu cầu thực tế, mong anh/chị chia sẻ thẳng thắn theo trải nghiệm và quan sát của mình. Không có câu trả lời đúng hoặc sai. Dữ liệu khảo sát không được sử dụng để đánh giá cá nhân, đánh giá đơn vị, xử lý trách nhiệm hoặc làm căn cứ cho các quyết định về nhân sự.
 
 ### Câu 3.1 — Mức độ quen thuộc hiện tại của anh/chị với mỗi nội dung sau? [Bắt buộc]
-- **Loại:** Multiple choice grid, bật "Require a response in each row"
-- **Cột (thang 1–5):** 1 Chưa biết gì / 2 Từng nghe qua / 3 Hiểu cơ bản / 4 Hiểu rõ / 5 Hướng dẫn người khác được
-- **Hàng:**
+- **Loại:** KHÔNG dùng grid. **Tách thành 8 câu Multiple choice riêng biệt**, mỗi câu là 1 nội dung. Mỗi câu **[Bắt buộc]**.
+- **Gợi ý trình bày:** đặt 1 dòng tiêu đề phụ trước 8 câu: *"Với mỗi nội dung dưới đây, anh/chị cho biết mức độ quen thuộc hiện tại (1 = Chưa biết gì … 5 = Hướng dẫn người khác được)."*
+- **5 lựa chọn dùng chung cho cả 8 câu (đưa nguyên cả nhãn mô tả vào từng option):**
+  - 1 – Chưa biết gì
+  - 2 – Từng nghe qua
+  - 3 – Hiểu cơ bản
+  - 4 – Hiểu rõ
+  - 5 – Hướng dẫn người khác được
+- **8 câu (tiêu đề mỗi câu = tên nội dung):**
   1. ESG là gì và tại sao quan trọng với TCIT
   2. Phát thải Scope 1 (trực tiếp) và Scope 2 (gián tiếp) tại cảng
   3. EU ETS và tác động chi phí carbon đến hãng tàu
@@ -138,7 +149,7 @@
   6. Chủ đề trọng yếu (Materiality) và cách xác định
   7. Hệ thống quản lý ESG (ESMS) là gì
   8. Vị thế ESG của TCIT so với Gemalink, CMIT, PTP
-- ⚠️ **Giống câu 2.2:** bản gốc có tối đa 3 dòng "Khác" tự nhập trong ma trận — Google Form không làm được. Thêm 1 câu Paragraph (không bắt buộc) ngay sau grid: *"Trường hợp có nội dung khác chưa nêu trong danh sách, anh/chị ghi tại đây kèm mức 1–5 (tối đa 3 nội dung)."*
+- **Dòng "Khác" tự nhập (bản gốc cho tối đa 3):** Google Form không tái hiện được → thêm 1 câu Paragraph (không bắt buộc) sau 8 câu trên: *"Trường hợp có nội dung khác chưa nêu trong danh sách, anh/chị ghi tại đây kèm mức 1–5 (tối đa 3 nội dung)."*
 
 ### Câu 3.2 — Hiện đơn vị đang làm gì có liên quan đến ESG (dù chưa gọi tên là ESG)? [Bắt buộc]
 - **Loại:** Paragraph
@@ -203,7 +214,8 @@ Settings → Presentation → Confirmation message:
 
 | # | Tính năng bản gốc | Google Form | Giải pháp trong brief |
 |---|---|---|---|
-| 1 | Ma trận 2.2 & 3.1 có tối đa 3 dòng "Khác" tự nhập nội dung + chấm điểm, mở dần từng dòng | Grid không cho hàng tự nhập | Thêm câu Paragraph không bắt buộc sau mỗi grid, ghi "nội dung – điểm" |
+| 1a | Ma trận 2.2 & 3.1 dạng lưới likert | Grid khó bấm trên điện thoại | **Đã đổi hướng thiết kế:** tách mỗi hàng thành 1 câu Multiple choice riêng, 5 lựa chọn kèm nhãn mô tả (1 – Rất thấp… / 1 – Chưa biết gì…) |
+| 1b | Tối đa 3 dòng "Khác" tự nhập nội dung + chấm điểm, mở dần từng dòng | Không có hàng/câu tự nhập kèm điểm | Thêm câu Paragraph không bắt buộc sau mỗi cụm, ghi "nội dung – điểm" |
 | 2 | Dropdown "Đơn vị công tác" có ô tự nhập khi chọn Khác | Dropdown không có "Other…" tự nhập | Đổi sang Multiple choice + "Other…" |
 | 3 | Giới hạn ký tự (200 short / 2000 long) kèm bộ đếm ký tự | Có thể set validation "Maximum character count" nhưng không có bộ đếm hiển thị | Có thể bỏ qua, hoặc set validation max length nếu muốn |
 | 4 | Giao diện tab + progress bar theo trạng thái hoàn thành, tô đỏ đúng câu thiếu | Chỉ có section tuyến tính + progress bar chuẩn | Dùng section + Show progress bar; chấp nhận khác biệt |
